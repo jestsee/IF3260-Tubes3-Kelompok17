@@ -14,16 +14,13 @@ class Cube {
         this.length = length;
         this.width = width;
         this.height = height;
+        
         this.position = this.generatePosition();
         this.rotate = rotate;
         this.translation = translation;
         this.scale = scale;
-
-        // (!rotate) ? this.rotate = [0, 0, 0]: this.rotate = rotate;
-        // (!translation) ? this.translation = [0, 0, 0]: this.translation = translation;
-        // (!scale) ? this.scale = [1,1,1]: this.scale = scale;
-
-        this.matrix = this.generateMatrix()
+        
+        this.matrix = this.generateMatrix() 
     }
 
     generatePosition() {
@@ -34,29 +31,31 @@ class Cube {
     }
 
     generateMatrix() {
-        var matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 800);
+        // var matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 800);
+        var matrix = m4.identity();
+        // var matrix = new Array(16).fill(0);
         
-        // untuk rotasi di titik pusat
-        matrix = m4.translate(matrix, this.translation[0], this.translation[1], this.translation[2]);
-        matrix = m4.translate(matrix, this.center[0], this.center[1], this.center[2]);
-        matrix = m4.scale(matrix, this.scale[0], this.scale[1], this.scale[2]); // harusnya diakhir
-        matrix = m4.xRotate(matrix, degToRad(this.rotate[0]));
-        matrix = m4.yRotate(matrix, degToRad(this.rotate[1]));
-        matrix = m4.zRotate(matrix, degToRad(this.rotate[2]));
-        matrix = m4.translate(matrix, -this.center[0], -this.center[1], -this.center[2]);
+        // // untuk rotasi di titik pusat
+        // matrix = m4.translate(matrix, this.translation[0], this.translation[1], this.translation[2]);
+        // matrix = m4.translate(matrix, this.center[0], this.center[1], this.center[2]);
+        // matrix = m4.scale(matrix, this.scale[0], this.scale[1], this.scale[2]); // harusnya diakhir
+        // matrix = m4.xRotate(matrix, degToRad(this.rotate[0]));
+        // matrix = m4.yRotate(matrix, degToRad(this.rotate[1]));
+        // matrix = m4.zRotate(matrix, degToRad(this.rotate[2]));
+        // matrix = m4.translate(matrix, -this.center[0], -this.center[1], -this.center[2]);
 
         // ----------------------------------------------------------------------------
 
         // rotasi bukan di titik pusat
-        // var translation = this.translation;
-        // var rotation = [degToRad(this.rotate[0]), degToRad(this.rotate[1]), degToRad(this.rotate[2])];
-        // var scale = this.scale;
+        var translation = this.translation;
+        var rotation = [degToRad(this.rotate[0]), degToRad(this.rotate[1]), degToRad(this.rotate[2])];
+        var scale = this.scale;
 
-        // matrix = m4.translate(matrix, translation[0], translation[1], translation[2]);
-        // matrix = m4.xRotate(matrix, rotation[0]);
-        // matrix = m4.yRotate(matrix, rotation[1]);
-        // matrix = m4.zRotate(matrix, rotation[2]);
-        // matrix = m4.scale(matrix, scale[0], scale[1], scale[2]);
+        matrix = m4.translate(matrix, translation[0], translation[1], translation[2]);
+        matrix = m4.xRotate(matrix, rotation[0]);
+        matrix = m4.yRotate(matrix, rotation[1]);
+        matrix = m4.zRotate(matrix, rotation[2]);
+        matrix = m4.scale(matrix, scale[0], scale[1], scale[2]);
 
         return matrix
     }

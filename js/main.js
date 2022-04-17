@@ -1,12 +1,11 @@
 "use strict";
 
 // node structure
-var Node = function(source) { // source diisi sama transform matrix
+var Node = function() { 
     this.children = [];
     this.position = [];
     this.localMatrix = m4.identity();
     this.worldMatrix = m4.identity();
-    this.source = source;
     this.name = "";
 };
 
@@ -27,17 +26,12 @@ Node.prototype.setParent = function(parent) {
 };
 
 Node.prototype.updateWorldMatrix = function(parentWorldMatrix) {
-
-    // var source = this.source;
-    // if (source) {
-    //   source.getMatrix(this.localMatrix);
-    // }
-
     if (parentWorldMatrix) {
       // a matrix was passed in so do the math
       this.worldMatrix = m4.multiply(parentWorldMatrix, this.localMatrix);
     } else {
       // no matrix was passed in so just copy local to world
+      console.log("masuk else " + this.name);
       m4.copy(this.localMatrix, this.worldMatrix);
     }
 
@@ -51,12 +45,12 @@ Node.prototype.updateWorldMatrix = function(parentWorldMatrix) {
 // ------------------------------------------------
 
 // create object
-var cube = new Cube();
+// var cube = new Cube();
 //console.log(cube.position);
 
-var head = new Cube({translation:[0,-200,0]});
-var neck = new Cube({translation:[0,-120,0], scale:[0.5,0.5,1]});
-var torso = new Cube({translation:[0,10,0], scale:[1.5,2,1]});
+var head = new Cube({translation:[0,-200,0], /* scale:[1,1,0.7] */});
+var neck = new Cube({translation:[0,-120,0], /* scale:[0.5,0.5,0.5] */});
+var torso = new Cube({translation:[0,0,0], /* scale:[1.5,2,1] */});
 
 var leftUpperArm = new Cube({translation:[-100,-20,0], scale:[0.4, 1.2, 0]})
 var leftLowerArm = new Cube({translation:[-100,105,0], scale:[0.4, 1.2, 0]})
@@ -84,6 +78,7 @@ var neckNode = new Node();
 neckNode.localMatrix = neck.matrix;
 neckNode.position = neck.position;
 neckNode.name = "NECK";
+// neckNode.localMatrix = m4.scale(neckNode.localMatrix, 0.5, 0.5, 0.5);
 
 var torsoNode = new Node(); // jadi center ntar
 torsoNode.localMatrix = torso.matrix;
@@ -94,50 +89,62 @@ torsoNode.name = "TORSO"
 headNode.setParent(neckNode);
 neckNode.setParent(torsoNode);
 
-var objectsNode = [headNode, neckNode, torsoNode];
-var objects = [head, neck, torso];
+// var objectsNode = [headNode, neckNode, torsoNode];
+// var objects = [head, neck, torso];
+
+// var viewProjectionMatrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 800);
 
 // ------------------------------------------------
 
-requestAnimationFrame(drawScene);
-
-function drawScene(time) {
+function drawSceneWithAnim(time) {
   // console.log("draw scene called");
   time *= 0.0005;
 
   // update the local matrices for each object.
-  headNode.localMatrix = m4.multiply(m4.xRotation(0.01), headNode.localMatrix);
-  neckNode.localMatrix = m4.multiply(m4.xRotation(0.01), neckNode.localMatrix);
-  torsoNode.localMatrix = m4.multiply(m4.xRotation(0.01), torsoNode.localMatrix);
-  // torsoNode.localMatrix = m4.multiply(m4.zRotation(0.01), torsoNode.localMatrix);
+  // headNode.localMatrix = m4.multiply(m4.zRotation(0.01), headNode.localMatrix);
+  // neckNode.localMatrix = m4.multiply(m4.zRotation(0.01), neckNode.localMatrix);
+  torsoNode.localMatrix = m4.multiply(m4.zRotation(0.01), torsoNode.localMatrix);
 
   // Update all world matrices in the scene graph
   torsoNode.updateWorldMatrix();
 
-  // iterasi mulai dari torso
+  // start iterating from torso
   iterateDraw(torsoNode);
 
-  requestAnimationFrame(drawScene);
+  requestAnimationFrame(drawSceneWithAnim);
+}
+
+function drawScene() {
+  // update the local matrices for each object.
+  headNode.localMatrix = m4.multiply(m4.xRotation(0.01), headNode.localMatrix);
+  neckNode.localMatrix = m4.multiply(m4.xRotation(0.01), neckNode.localMatrix);
+  torsoNode.localMatrix = m4.multiply(m4.xRotation(0.01), torsoNode.localMatrix);
+
+  // Update all world matrices in the scene graph
+  torsoNode.updateWorldMatrix();
+
+  // start iterating from torso
+  iterateDraw(torsoNode);
 }
 
 function iterateDraw(object) {
-  console.log(object.children);
+  // console.log(object.name + " : " + object.worldMatrix);
+  // console.log(object.name + " : " + object.localMatrix);
+  var projMatrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 800);
+  var matrix = m4.multiply(projMatrix, object.worldMatrix)
+  draw(object.position, matrix)
 
-  var iterate = true
-  if (object.children.length == 0) {
-    iterate = false
-  }
-
-  draw(object.position, object.localMatrix)
-
-  if(iterate) {
-    object.children.forEach(child => {
+  if (object.children.length != 0) {
+    object.children.forEach(function(child) {
       iterateDraw(child);
     });
   }
 }
 
 // ------------------------------------------------
+
+requestAnimationFrame(drawSceneWithAnim);
+// drawScene();
 
 // // create new states
 // var states = new States();
