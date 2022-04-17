@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tubes 3 Grafkom</title>
+</head>
+<body>
+    <script type="text/javascript" src="../js/canvas.js"></script>
+    <script type="text/javascript" src="../js/shaders.js"></script>
+    <script type="text/javascript" src="../js/utils.js"></script>
+    <script type="text/javascript" src="../js/draw.js"></script>
+    <script type="text/javascript" src="../js/cube.js"></script>
+    <script type="text/javascript" src="../js/states.js"></script>
+    <script type="text/javascript" src="../js/controllers.js"></script>
+    <script type="text/javascript" src="../js/hierarchy_2.js"></script>
+
+    <div class="select-save-load">
+        <label for="object-list">Select an object:</label>
+        <select name="object-list" id="object-list" oninput="selectObject()"></select>
+  
+        <!-- <button class="button" onclick="save()">Save</button>
+        <input type="file" id="myfile" name="myfile" accept="application/JSON">
+        <button type="button" onclick="load()">Load</button> -->
+    </div>
+
+    <div class="rotation">
+        <b>Rotation</b>
+        <!-- xslider -->
+        <div class="slide">
+        <label for="xrotation">X:</label>
+        <input type="range" class="slider" oninput="xRotation()" id="xrotation" min="0" max="360">
+        <a id="x-val-rot"></a>
+  
+        <!-- yslider -->
+        <label for="yrotation">Y:</label>
+        <input type="range" class="slider" oninput="yRotation()" id="yrotation" min="0" max="360">
+        <a id="y-val-rot"></a>
+  
+        <!-- yslider -->
+        <label for="zrotation">Z:</label>
+        <input type="range" class="slider" oninput="zRotation()" id="zrotation" min="0" max="360">
+        <a id="z-val-rot"></a>
+        </div>
+      </div>
+  
+      <div class="translation">
+        <b>Translation</b>
+        <!-- xslider -->
+        <div class="slide">
+        <label for="xtranslation">X:</label>
+        <input type="range" class="slider" oninput="xTranslation()" id="xtranslation" min="-1000" max="1000">
+        <a id="x-val-trans"></a>
+  
+        <!-- yslider -->
+        <label for="yrotation">Y:</label>
+        <input type="range" class="slider" oninput="yTranslation()" id="ytranslation" min="-1000" max="1000">
+        <a id="y-val-trans"></a>
+  
+        <!-- yslider -->
+        <label for="ztranslation">Z:</label>
+        <input type="range" class="slider" oninput="zTranslation()" id="ztranslation" min="-1000" max="1000">
+        <a id="z-val-trans"></a>
+        </div>
+      </div>
+  
+      <div class="scale">
+        <b>Scale</b>
+        <!-- xslider -->
+        <div class="slide">
+        <label for="xscale">X:</label>
+        <input type="range" class="slider" oninput="xScale()" id="xscale" min="-500" max="500">
+        <a id="x-val-scale"></a>
+  
+        <!-- yslider -->
+        <label for="yscale">Y:</label>
+        <input type="range" class="slider" oninput="yScale()" id="yscale" min="-500" max="500">
+        <a id="y-val-scale"></a>
+  
+        <!-- yslider -->
+        <label for="zscale">Z:</label>
+        <input type="range" class="slider" oninput="zScale()" id="zscale" min="-500" max="500">
+        <a id="z-val-scale"></a>
+        </div>
+      </div>
+</body>
+</html>
