@@ -20,7 +20,10 @@ class Cube {
         this.translation = translation;
         this.scale = scale;
         
-        this.matrix = this.generateMatrix() 
+        // node properties
+        this.localMatrix = this.generateMatrix();
+        this.worldMatrix = m4.identity();
+        this.children = [];
     }
 
     generatePosition() {
@@ -30,39 +33,89 @@ class Cube {
         )
     }
 
-    generateMatrix() {
+    generateMatrix(matrix) {
         // var matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 800);
-        var matrix = m4.identity();
-        // var matrix = new Array(16).fill(0);
+        matrix = matrix || m4.identity();
+        // var matrix = new Array(16);
         
-        // // untuk rotasi di titik pusat
-        // matrix = m4.translate(matrix, this.translation[0], this.translation[1], this.translation[2]);
-        // matrix = m4.translate(matrix, this.center[0], this.center[1], this.center[2]);
-        // matrix = m4.scale(matrix, this.scale[0], this.scale[1], this.scale[2]); // harusnya diakhir
-        // matrix = m4.xRotate(matrix, degToRad(this.rotate[0]));
-        // matrix = m4.yRotate(matrix, degToRad(this.rotate[1]));
-        // matrix = m4.zRotate(matrix, degToRad(this.rotate[2]));
-        // matrix = m4.translate(matrix, -this.center[0], -this.center[1], -this.center[2]);
+        // untuk rotasi di titik pusat
+        matrix = m4.translate(matrix, this.translation[0], this.translation[1], this.translation[2]);
+        matrix = m4.translate(matrix, this.center[0], this.center[1], this.center[2]);
+        matrix = m4.scale(matrix, this.scale[0], this.scale[1], this.scale[2]); // harusnya diakhir
+        matrix = m4.xRotate(matrix, degToRad(this.rotate[0]));
+        matrix = m4.yRotate(matrix, degToRad(this.rotate[1]));
+        matrix = m4.zRotate(matrix, degToRad(this.rotate[2]));
+        matrix = m4.translate(matrix, -this.center[0], -this.center[1], -this.center[2]);
 
         // ----------------------------------------------------------------------------
 
-        // rotasi bukan di titik pusat
-        var translation = this.translation;
-        var rotation = [degToRad(this.rotate[0]), degToRad(this.rotate[1]), degToRad(this.rotate[2])];
-        var scale = this.scale;
+        // rotasi bukan di titik pusat (translate - rotate- scale)
+        // var translation = this.translation;
+        // var rotation = [degToRad(this.rotate[0]), degToRad(this.rotate[1]), degToRad(this.rotate[2])];
+        // var scale = this.scale;
 
-        matrix = m4.translate(matrix, translation[0], translation[1], translation[2]);
-        matrix = m4.xRotate(matrix, rotation[0]);
-        matrix = m4.yRotate(matrix, rotation[1]);
-        matrix = m4.zRotate(matrix, rotation[2]);
-        matrix = m4.scale(matrix, scale[0], scale[1], scale[2]);
+        // matrix = m4.translate(matrix, translation[0], translation[1], translation[2]);
+        // matrix = m4.xRotate(matrix, rotation[0]);
+        // matrix = m4.yRotate(matrix, rotation[1]);
+        // matrix = m4.zRotate(matrix, rotation[2]);
+        // matrix = m4.scale(matrix, scale[0], scale[1], scale[2]);
 
         return matrix
     }
 
+    setParent(parent) {
+        if (this.parent) {
+            var ndx = this.parent.children.indexOf(this);
+            if (ndx >= 0) {
+              this.parent.children.splice(ndx, 1);
+            }
+        }
+      
+        // Add us to our new parent
+        if (parent) {
+            parent.children.push(this);
+        }
+        this.parent = parent;
+    }
+
+    updateWorldMatrix(parentWorldMatrix) {
+        if (parentWorldMatrix) {
+            // a matrix was passed in so do the math
+            this.worldMatrix = m4.multiply(parentWorldMatrix, this.localMatrix);
+        } else {
+            // no matrix was passed in so just copy local to world
+            console.log("masuk else " + this.name);
+            m4.copy(this.localMatrix, this.worldMatrix);
+        }
+      
+        // now process all the children
+        var worldMatrix = this.worldMatrix;
+        this.children.forEach(function(child) {
+            child.updateWorldMatrix(worldMatrix);
+        });
+    }
+
+    iterateDraw() {
+        // console.log(this.worldMatrix);
+        // console.log(this.localMatrix);
+
+        var projMatrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 800);
+        var matrix = m4.multiply(projMatrix, this.worldMatrix)
+        draw(this.position, matrix)
+
+        if (this.children.length != 0) {
+            this.children.forEach(function(child) {
+                child.iterateDraw();
+            });
+        }
+    }
+
     draw() {
-        this.matrix = this.generateMatrix()
-        draw(this.position, this.matrix)
+        // this.localMatrix = this.generateMatrix()
+        // draw(this.position, this.localMatrix) // TODO pake worldMatrix harusnya
+
+        this.updateWorldMatrix();
+        this.iterateDraw();
     }
 
     xRotate(n) {

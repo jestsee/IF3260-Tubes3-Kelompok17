@@ -50,7 +50,7 @@ Node.prototype.updateWorldMatrix = function(parentWorldMatrix) {
 
 var head = new Cube({translation:[0,-200,0], /* scale:[1,1,0.7] */});
 var neck = new Cube({translation:[0,-120,0], /* scale:[0.5,0.5,0.5] */});
-var torso = new Cube({translation:[0,0,0], /* scale:[1.5,2,1] */});
+var torso = new Cube({translation:[0,10,0], /* scale:[1.5,2,1] */});
 
 var leftUpperArm = new Cube({translation:[-100,-20,0], scale:[0.4, 1.2, 0]})
 var leftLowerArm = new Cube({translation:[-100,105,0], scale:[0.4, 1.2, 0]})
