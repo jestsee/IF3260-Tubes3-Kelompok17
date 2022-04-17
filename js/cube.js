@@ -7,13 +7,15 @@ class Cube {
             height = length,
             rotate = [0, 0, 0],
             translation = [0, 0, 0],
-            scale = [1, 1, 1]
+            scale = [1, 1, 1],
+            withColor = true
         } = {}
     ) {
         this.center = center;
         this.length = length;
         this.width = width;
         this.height = height;
+        this.withColor = withColor;
         
         this.position = this.generatePosition();
         this.rotate = rotate;
@@ -101,7 +103,7 @@ class Cube {
 
         var projMatrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 800);
         var matrix = m4.multiply(projMatrix, this.worldMatrix)
-        draw(this.position, matrix)
+        draw(this.position, matrix, this.withColor);
 
         if (this.children.length != 0) {
             this.children.forEach(function(child) {

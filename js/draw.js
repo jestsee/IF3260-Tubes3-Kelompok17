@@ -1,4 +1,4 @@
- function draw (arrPosition, matrix) {
+ function draw (arrPosition, matrix, withColor) {
     // look up where the vertex data needs to go.
     var positionLocation = gl.getAttribLocation(program, "a_position");
     var colorLocation = gl.getAttribLocation(program, "a_color");
@@ -8,7 +8,10 @@
     var matrixLocation = gl.getUniformLocation(program, "u_matrix");
 
     // default color
-    var arrColor = generateColor(arrPosition.length/6);
+    var arrColor = [];
+    if (withColor) {
+        arrColor = generateColor(arrPosition.length/6);
+    }
 
     var positionBuffer = gl.createBuffer();
     // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
