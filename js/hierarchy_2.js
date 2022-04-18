@@ -5,26 +5,36 @@ var wholeBody = new Cube({translation:[0,0,0], withColor:false});
 var headJoint = new Cube({translation:[0,-80,0], withColor:false});
 
 // arms
-var leftUpperArm = new Cube({scale:[0.4, 0.7, 0]})
-var leftLowerArm = new Cube({scale:[0.4, 0.3, 0]})
-var rightUpperArm = new Cube({scale:[0.4, 0.7, 0]})
-var rightLowerArm = new Cube({scale:[0.4, 0.3, 0]})
+var leftUpperArm = new Cube({scale:[0.4, 0.7, 1]})
+var leftLowerArm = new Cube({scale:[0.4, 0.3, 1]})
+var rightUpperArm = new Cube({scale:[0.4, 0.7, 1]})
+var rightLowerArm = new Cube({scale:[0.4, 0.3, 1]})
 
 var leftUpperArmJoint = new Cube({translation:[-122,-10,0], withColor:false});
 var leftLowerArmJoint = new Cube({translation:[0,53,0], withColor:false});
 var rightUpperArmJoint = new Cube({translation:[122,-10,0], withColor:false});
 var rightLowerArmJoint = new Cube({translation:[0,53,0], withColor:false});
 
-// legs
-var leftUpperLeg = new Cube({scale:[0.5, 1.5, 0]})
-var leftLowerLeg = new Cube({scale:[0.6, 0.3, 0]})
-var rightUpperLeg = new Cube({scale:[0.5, 1.5, 0]})
-var rightLowerLeg = new Cube({scale:[0.6, 0.3, 0]})
+leftUpperArmJoint.moveCenterToUpmost();
+leftLowerArmJoint.moveCenterToUpmost();
+rightUpperArmJoint.moveCenterToUpmost();
+rightLowerArmJoint.moveCenterToUpmost();
 
-var leftUpperLegJoint = new Cube({translation:[-36,100,0], withColor:false});
-var leftLowerLegJoint = new Cube({translation:[0,101,0], withColor:false});
-var rightUpperLegJoint = new Cube({translation:[36,100,0], withColor:false});
-var rightLowerLegJoint = new Cube({translation:[0,101,0], withColor:false});
+// legs
+var leftUpperLeg = new Cube({scale:[0.5, 1.5, 1]})
+var leftLowerLeg = new Cube({scale:[0.6, 0.3, 1]})
+var rightUpperLeg = new Cube({scale:[0.5, 1.5, 1]})
+var rightLowerLeg = new Cube({scale:[0.6, 0.3, 1]})
+
+var leftUpperLegJoint = new Cube({translation:[-36,100,1], withColor:false});
+var leftLowerLegJoint = new Cube({translation:[0,101,1], withColor:false});
+var rightUpperLegJoint = new Cube({translation:[36,100,1], withColor:false});
+var rightLowerLegJoint = new Cube({translation:[0,101,1], withColor:false});
+
+leftUpperLegJoint.moveCenterToUpmost();
+leftLowerLegJoint.moveCenterToUpmost();
+rightUpperLegJoint.moveCenterToUpmost();
+rightLowerLegJoint.moveCenterToUpmost();
 
 // set parent
 headJoint.setParent(wholeBody);
@@ -69,6 +79,7 @@ objects = [
 // wholeBody.yScale(0.5);
 // wholeBody.zScale(0.5);
 
+
 let n = 1;
 
 function drawSceneWithAnim(time) {
@@ -76,9 +87,12 @@ function drawSceneWithAnim(time) {
     time *= 0.0005;
   
     // update the local matrices for each object.
-     //wholeBody.zRotate(n);
-     // neckJoint.yRotate(n);
-     //leftUpperLegJoint.yRotate(n);
+    wholeBody.yRotate(n);
+    leftUpperArmJoint.xRotate(n);
+    rightUpperArmJoint.xRotate(-n);
+
+    leftUpperLegJoint.xRotate(n);
+    rightUpperLegJoint.xRotate(-n);
 
      objects.forEach(obj => {
         obj.localMatrix = obj.generateMatrix();
@@ -87,7 +101,10 @@ function drawSceneWithAnim(time) {
     wholeBody.draw();
   
     requestAnimationFrame(drawSceneWithAnim);
-    n+=0.5;
+    if(n==90) {
+        n= -90;
+    }
+    n+=1;
     console.log(n);
 }
 
