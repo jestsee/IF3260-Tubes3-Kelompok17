@@ -5,14 +5,18 @@
  gl.shaderSource(vertexShader, [
    'attribute vec4 a_position;',
    'attribute vec4 a_color;',
+   'attribute vec2 a_texcoord;',
+   
    'uniform mat4 u_matrix;',
  
    'varying vec4 v_color;',
+   'varying vec2 v_texcoord;',
    
    'void main()',
    '{',
    '  gl_Position = u_matrix * a_position;',
    '  v_color = a_color;',
+   '  v_texcoord = a_texcoord;',
    '}'
    ].join('\n'))
  gl.compileShader(vertexShader)
@@ -22,9 +26,19 @@
    'precision mediump float;',
    '',
    'varying vec4 v_color;',
+   'varying vec2 v_texcoord;',
+   
+   'uniform sampler2D u_texture;',
+   'uniform bool u_texture_bool;',
+
    'void main()',
    '{',
-   '  gl_FragColor = v_color;',
+   '  if (u_texture_bool) {',
+  //  '    gl_FragColor = textureCube(u_texture, normalize(v_normal));',
+   '    gl_FragColor = texture2D(u_texture, v_texcoord);',
+   '  } else {',
+   '    gl_FragColor = v_color;',
+   '  }',
    '}'
    ].join('\n'))
  gl.compileShader(fragmentShader)

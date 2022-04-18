@@ -1,11 +1,18 @@
+ // Asynchronously load an image
+ var image = new Image();
+ image.src = "../img/pattern.jpg";
+
  function draw (arrPosition, matrix, withColor) {
     // look up where the vertex data needs to go.
     var positionLocation = gl.getAttribLocation(program, "a_position");
     var colorLocation = gl.getAttribLocation(program, "a_color");
+    var texcoordLocation = gl.getAttribLocation(program, "a_texcoord");
 
     // lookup uniforms
     // var colorLocation = gl.getUniformLocation(program, "u_color");
     var matrixLocation = gl.getUniformLocation(program, "u_matrix");
+    var textureLocation = gl.getUniformLocation(program, "u_texture");
+    var textureBool = gl.getUniformLocation(program, "u_texture_bool");
 
     // default color
     var arrColor = [];
@@ -19,20 +26,34 @@
     // Put geometry data into buffer
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arrPosition), gl.STATIC_DRAW);
 
-    // translation, rotation, scaling
-    // var translation = arrTranslation;
-    // var rotation = [degToRad(arrRotate[0]), degToRad(arrRotate[1]), degToRad(arrRotate[2])];
-    // var scale = arrScale;
-    // var color = [Math.random(), Math.random(), Math.random(), 1];
+    // ----------------------------------------------------------
+
+    // provide texture coordinates for the rectangle.
+    var texcoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
+
+    // Set Texcoords.
+    setTexcoords(gl);
+
+    // Create a texture.
+    var texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    // Fill the texture with a 1x1 blue pixel.
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
+    
+    image.addEventListener('load', function() {
+        // Now that the image has loaded make copy it to the texture.
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
+        gl.generateMipmap(gl.TEXTURE_2D);
+    });
+
+    // ----------------------------------------------------------
 
     resizeCanvasToDisplaySize(gl.canvas);
 
     // Tell WebGL how to convert from clip space to pixels
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
-    // Clear the canvas.
-    // gl.clearColor(0, 0, 0, 1);
-    // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // Turn on culling. By default backfacing triangles
     // will be culled.
@@ -56,42 +77,50 @@
     var normalize = false; // don't normalize the data
     var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
     var offset = 0;        // start at the beginning of the buffer
+    gl.vertexAttribPointer(positionLocation, size, type, normalize, stride, offset);
+
+    // Turn on the texcoord attribute
+    gl.enableVertexAttribArray(texcoordLocation);
+
+    // bind the texcoord buffer.
+    gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
+
+    // Tell the texcoord attribute how to get data out of texcoordBuffer (ARRAY_BUFFER)
+    var size = 2;          // 2 components per iteration
+    var type = gl.FLOAT;   // the data is 32bit floats
+    var normalize = false; // don't normalize the data
+    var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+    var offset = 0;        // start at the beginning of the buffer
     gl.vertexAttribPointer(
-        positionLocation, size, type, normalize, stride, offset);
+        texcoordLocation, size, type, normalize, stride, offset);
 
-    // Create a buffer for colors.
-    var colorBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    // Put the colors in the buffer.
-    gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(arrColor), gl.STATIC_DRAW);
+    // // Create a buffer for colors.
+    // var colorBuffer = gl.createBuffer();
+    // gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    // // Put the colors in the buffer.
+    // gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(arrColor), gl.STATIC_DRAW);
 
-    // Turn on the color attribute
-    gl.enableVertexAttribArray(colorLocation);
+    // // Turn on the color attribute
+    // gl.enableVertexAttribArray(colorLocation);
 
-    // Bind the color buffer.
-    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    // // Bind the color buffer.
+    // gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
 
-    // Tell the attribute how to get data out of colorBuffer (ARRAY_BUFFER)
-    var size = 3;                 // 3 components per iteration
-    var type = gl.UNSIGNED_BYTE;  // the data is 8bit unsigned values
-    var normalize = true;         // normalize the data (convert from 0-255 to 0-1)
-    var stride = 0;               // 0 = move forward size * sizeof(type) each iteration to get the next position
-    var offset = 0;               // start at the beginning of the buffer
-    gl.vertexAttribPointer(
-        colorLocation, size, type, normalize, stride, offset);
-
-    // Compute the matrices
-    // var matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 800);
-    // matrix = m4.translate(matrix, translation[0], translation[1], translation[2]);
-    // matrix = m4.translate(matrix, arrCenter[0], arrCenter[1], arrCenter[2]);
-    // matrix = m4.scale(matrix, scale[0], scale[1], scale[2]); // harusnya diakhir
-    // matrix = m4.xRotate(matrix, rotation[0]);
-    // matrix = m4.yRotate(matrix, rotation[1]);
-    // matrix = m4.zRotate(matrix, rotation[2]);
-    // matrix = m4.translate(matrix, -arrCenter[0], -arrCenter[1], -arrCenter[2]);
+    // // Tell the attribute how to get data out of colorBuffer (ARRAY_BUFFER)
+    // var size = 3;                 // 3 components per iteration
+    // var type = gl.UNSIGNED_BYTE;  // the data is 8bit unsigned values
+    // var normalize = true;         // normalize the data (convert from 0-255 to 0-1)
+    // var stride = 0;               // 0 = move forward size * sizeof(type) each iteration to get the next position
+    // var offset = 0;               // start at the beginning of the buffer
+    // gl.vertexAttribPointer(
+    //     colorLocation, size, type, normalize, stride, offset);
 
     // Set the matrix.
     gl.uniformMatrix4fv(matrixLocation, false, matrix);
+
+    // Tell the shader to use texture unit 0 for u_texture
+    gl.uniform1i(textureLocation, 0);
+    gl.uniform1i(textureBool, true);
 
     // Draw the geometry.
     var primitiveType = gl.TRIANGLES;
@@ -99,3 +128,138 @@
     var count = arrPosition.length;
     gl.drawArrays(primitiveType, offset, count);
 }
+
+// Fill the buffer with texture coordinates the F.
+function setTexcoords(gl) {
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([
+          // left column front
+          0, 0,
+          0, 1,
+          1, 0,
+          0, 1,
+          1, 1,
+          1, 0,
+  
+          // top rung front
+          0, 0,
+          0, 1,
+          1, 0,
+          0, 1,
+          1, 1,
+          1, 0,
+  
+          // middle rung front
+          0, 0,
+          0, 1,
+          1, 0,
+          0, 1,
+          1, 1,
+          1, 0,
+  
+          // left column back
+          0, 0,
+          1, 0,
+          0, 1,
+          0, 1,
+          1, 0,
+          1, 1,
+  
+          // top rung back
+          0, 0,
+          1, 0,
+          0, 1,
+          0, 1,
+          1, 0,
+          1, 1,
+  
+          // middle rung back
+          0, 0,
+          1, 0,
+          0, 1,
+          0, 1,
+          1, 0,
+          1, 1,
+  
+          // top
+          0, 0,
+          1, 0,
+          1, 1,
+          0, 0,
+          1, 1,
+          0, 1,
+  
+          // top rung right
+          0, 0,
+          1, 0,
+          1, 1,
+          0, 0,
+          1, 1,
+          0, 1,
+  
+          // under top rung
+          0, 0,
+          0, 1,
+          1, 1,
+          0, 0,
+          1, 1,
+          1, 0,
+  
+          // between top rung and middle
+          0, 0,
+          1, 1,
+          0, 1,
+          0, 0,
+          1, 0,
+          1, 1,
+  
+          // top of middle rung
+          0, 0,
+          1, 1,
+          0, 1,
+          0, 0,
+          1, 0,
+          1, 1,
+  
+          // right of middle rung
+          0, 0,
+          1, 1,
+          0, 1,
+          0, 0,
+          1, 0,
+          1, 1,
+  
+          // bottom of middle rung.
+          0, 0,
+          0, 1,
+          1, 1,
+          0, 0,
+          1, 1,
+          1, 0,
+  
+          // right of bottom
+          0, 0,
+          1, 1,
+          0, 1,
+          0, 0,
+          1, 0,
+          1, 1,
+  
+          // bottom
+          0, 0,
+          0, 1,
+          1, 1,
+          0, 0,
+          1, 1,
+          1, 0,
+  
+          // left side
+          0, 0,
+          0, 1,
+          1, 1,
+          0, 0,
+          1, 1,
+          1, 0]),
+        gl.STATIC_DRAW);
+  }
