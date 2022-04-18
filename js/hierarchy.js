@@ -8,26 +8,36 @@ var neckJoint = new Cube({translation:[0,-130,0], withColor:false});
 var headJoint = new Cube({translation:[0,-80,0], withColor:false});
 
 // arms
-var leftUpperArm = new Cube({scale:[0.4, 1.2, 0]})
-var leftLowerArm = new Cube({scale:[0.4, 1.2, 0]})
-var rightUpperArm = new Cube({scale:[0.4, 1.2, 0]})
-var rightLowerArm = new Cube({scale:[0.4, 1.2, 0]})
+var leftUpperArm = new Cube({scale:[0.4, 1.2, 0.4]})
+var leftLowerArm = new Cube({scale:[0.4, 1.2, 0.4]})
+var rightUpperArm = new Cube({scale:[0.4, 1.2, 0.4]})
+var rightLowerArm = new Cube({scale:[0.4, 1.2, 0.4]})
 
 var leftUpperArmJoint = new Cube({translation:[-100,-20,0], withColor:false});
 var leftLowerArmJoint = new Cube({translation:[0,125,0], withColor:false});
 var rightUpperArmJoint = new Cube({translation:[100,-20,0], withColor:false});
 var rightLowerArmJoint = new Cube({translation:[0,125,0], withColor:false});
 
+leftUpperArmJoint.moveCenterToUpmost();
+leftLowerArmJoint.moveCenterToUpmost();
+rightUpperArmJoint.moveCenterToUpmost();
+rightLowerArmJoint.moveCenterToUpmost();
+
 // legs
-var leftUpperLeg = new Cube({scale:[0.6, 1.6, 0]})
-var leftLowerLeg = new Cube({scale:[0.5, 1.8, 0]})
-var rightUpperLeg = new Cube({scale:[0.6, 1.6, 0]})
-var rightLowerLeg = new Cube({scale:[0.5, 1.8, 0]})
+var leftUpperLeg = new Cube({scale:[0.6, 1.6, 0.6]})
+var leftLowerLeg = new Cube({scale:[0.5, 1.8, 0.5]})
+var rightUpperLeg = new Cube({scale:[0.6, 1.6, 0.6]})
+var rightLowerLeg = new Cube({scale:[0.5, 1.8, 0.5]})
 
 var leftUpperLegJoint = new Cube({translation:[-35,185,0], withColor:false});
 var leftLowerLegJoint = new Cube({translation:[0,175,0], withColor:false});
 var rightUpperLegJoint = new Cube({translation:[35,185,0], withColor:false});
 var rightLowerLegJoint = new Cube({translation:[0,175,0], withColor:false});
+
+leftUpperLegJoint.moveCenterToUpmost();
+leftLowerLegJoint.moveCenterToUpmost();
+rightUpperLegJoint.moveCenterToUpmost();
+rightLowerLegJoint.moveCenterToUpmost();
 
 // set parent
 torso.setParent(wholeBody);
@@ -71,9 +81,9 @@ objects = [
     rightLowerLeg, rightLowerLegJoint,
 ]
 
-// wholeBody.xScale(0.5);
-// wholeBody.yScale(0.5);
-// wholeBody.zScale(0.5);
+wholeBody.xScale(0.75);
+wholeBody.yScale(0.75);
+wholeBody.zScale(0.75);
 
 let n = 1;
 
@@ -82,9 +92,16 @@ function drawSceneWithAnim(time) {
     time *= 0.0005;
   
     // update the local matrices for each object.
-     wholeBody.zRotate(n);
-     // neckJoint.yRotate(n);
-     leftUpperLegJoint.yRotate(n);
+     wholeBody.yRotate(n);
+    //  wholeBody.zRotate(n);
+
+    //  neckJoint.yRotate(n);
+     leftUpperArmJoint.xRotate(n);
+    //  leftLowerArmJoint.zRotate(n);
+    rightUpperArmJoint.xRotate(n);
+
+    leftUpperLegJoint.xRotate(n);
+    rightUpperLegJoint.xRotate(n);
 
      objects.forEach(obj => {
         obj.localMatrix = obj.generateMatrix();
@@ -93,18 +110,16 @@ function drawSceneWithAnim(time) {
     wholeBody.draw();
   
     requestAnimationFrame(drawSceneWithAnim);
-    n+=0.5;
-    console.log(n);
+    n+=1;
+    // console.log(n);
 }
 
 requestAnimationFrame(drawSceneWithAnim);
 
-// aksi
-// console.log(torso.rotate);
+// rotation
 wholeBody.zRotate(0);
 neckJoint.zRotate(0);
 head.zRotate(0);
-// console.log(torso.rotate);
 
 // update & draw
 objects.forEach(obj => {

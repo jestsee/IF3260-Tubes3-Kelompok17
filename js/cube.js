@@ -86,7 +86,7 @@ class Cube {
             this.worldMatrix = m4.multiply(parentWorldMatrix, this.localMatrix);
         } else {
             // no matrix was passed in so just copy local to world
-            console.log("masuk else " + this.name);
+            // console.log("masuk else " + this.name);
             m4.copy(this.localMatrix, this.worldMatrix);
         }
       
@@ -97,10 +97,11 @@ class Cube {
         });
     }
 
-    iterateDraw() {
-        // console.log(this.worldMatrix);
-        // console.log(this.localMatrix);
+    moveCenterToUpmost() {
+        this.center = [canvas.width/2, canvas.height/2 - this.length/2, 0]
+    }
 
+    iterateDraw() {
         var projMatrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 800);
         var matrix = m4.multiply(projMatrix, this.worldMatrix)
         draw(this.position, matrix, this.withColor);
@@ -113,9 +114,6 @@ class Cube {
     }
 
     draw() {
-        // this.localMatrix = this.generateMatrix()
-        // draw(this.position, this.localMatrix) // TODO pake worldMatrix harusnya
-
         this.updateWorldMatrix();
         this.iterateDraw();
     }
