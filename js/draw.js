@@ -1,4 +1,6 @@
-function draw (arrPosition, matrix, withColor) {
+function draw (arrPosition, matrix, withColor, arrRotate, shading) {
+    // console.log("draw called");
+
     // look up where the vertex data needs to go.
     var positionLocation = gl.getAttribLocation(program, "a_position");
     var colorLocation = gl.getAttribLocation(program, "a_color");
@@ -8,8 +10,10 @@ function draw (arrPosition, matrix, withColor) {
     // var colorLocation = gl.getUniformLocation(program, "u_color");
     var matrixLocation = gl.getUniformLocation(program, "u_matrix");
     var textureBool = gl.getUniformLocation(program, "u_texture_bool");
-    var reverseLightDirectionLocation =
-      gl.getUniformLocation(program, "u_reverseLightDirection");
+    var shadingBool = gl.getUniformLocation(program, "u_shading_bool");
+    var worldViewProjectionLocation = gl.getUniformLocation(program, "u_worldViewProjection");
+    var worldInverseTransposeLocation = gl.getUniformLocation(program, "u_worldInverseTranspose");
+    var reverseLightDirectionLocation = gl.getUniformLocation(program, "u_reverseLightDirection");
 
     // default color
     var arrColor = [];
@@ -77,8 +81,8 @@ function draw (arrPosition, matrix, withColor) {
     var normalize = false; // normalize the data (convert from 0-255 to 0-1)
     var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
     var offset = 0;        // start at the beginning of the buffer
-    gl.vertexAttribPointer(
-        normalLocation, size, type, normalize, stride, offset);
+    gl.vertexAttribPointer(normalLocation, size, type, normalize, stride, offset);
+
     // ---------------------------------------------------------------
 
     // Create a buffer for colors.
@@ -102,12 +106,23 @@ function draw (arrPosition, matrix, withColor) {
     gl.vertexAttribPointer(
         colorLocation, size, type, normalize, stride, offset);
 
+    // Draw cube at the origin
+    var worldMatrix = m4.yRotation(arrRotate[1]);
+    
+    // Multiply the matrices.
+    var worldViewProjectionMatrix = m4.multiply(matrix, worldMatrix);
+    var worldInverseMatrix = m4.inverse(worldMatrix);
+    var worldInverseTransposeMatrix = m4.transpose(worldInverseMatrix);
+
     // Set the matrix.
     gl.uniformMatrix4fv(matrixLocation, false, matrix);
+    // gl.uniformMatrix4fv(worldLocation, false, worldMatrix);
+    gl.uniformMatrix4fv(worldInverseTransposeLocation, false, worldInverseTransposeMatrix);
 
     // Tell the shader to use texture unit 0 for u_texture
     // gl.uniform1i(textureLocation, 0);
     gl.uniform1i(textureBool, false);
+    gl.uniform1i(shadingBool, shading);
 
     // set the light direction.
     gl.uniform3fv(reverseLightDirectionLocation, m4.normalize([0.5, 0.7, 1]));
@@ -120,7 +135,8 @@ function draw (arrPosition, matrix, withColor) {
 }
 
 async function drawTexImage (arrPosition, matrix, withColor) {
-    const url = "../img/pattern.jpg"
+    // console.log("drawTexImage called");
+    const url = "https://webglfundamentals.org/webgl/resources/f-texture.png";
     const img = await loadImage(url);
     _drawTexImage(arrPosition, matrix, withColor, img);
 }
@@ -128,20 +144,19 @@ async function drawTexImage (arrPosition, matrix, withColor) {
 function _drawTexImage (arrPosition, matrix, withColor, img) {
     // look up where the vertex data needs to go.
     var positionLocation = gl.getAttribLocation(program, "a_position");
-    // var colorLocation = gl.getAttribLocation(program, "a_color");
+    var colorLocation = gl.getAttribLocation(program, "a_color");
     var texcoordLocation = gl.getAttribLocation(program, "a_texcoord");
 
     // lookup uniforms
-    // var colorLocation = gl.getUniformLocation(program, "u_color");
     var matrixLocation = gl.getUniformLocation(program, "u_matrix");
     var textureLocation = gl.getUniformLocation(program, "u_texture");
     var textureBool = gl.getUniformLocation(program, "u_texture_bool");
 
     // default color
-    // var arrColor = [];
-    // if (withColor) {
-    //     arrColor = generateColor(arrPosition.length/6);
-    // }
+    var arrColor = [];
+    if (withColor) {
+        arrColor = generateColor(arrPosition.length/6);
+    }
 
     var positionBuffer = gl.createBuffer();
     // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
@@ -217,26 +232,26 @@ function _drawTexImage (arrPosition, matrix, withColor, img) {
     gl.vertexAttribPointer(
         texcoordLocation, size, type, normalize, stride, offset);
 
-    // // Create a buffer for colors.
-    // var colorBuffer = gl.createBuffer();
-    // gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    // // Put the colors in the buffer.
-    // gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(arrColor), gl.STATIC_DRAW);
+    // Create a buffer for colors.
+    var colorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    // Put the colors in the buffer.
+    gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(arrColor), gl.STATIC_DRAW);
 
-    // // Turn on the color attribute
-    // gl.enableVertexAttribArray(colorLocation);
+    // Turn on the color attribute
+    gl.enableVertexAttribArray(colorLocation);
 
-    // // Bind the color buffer.
-    // gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    // Bind the color buffer.
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
 
-    // // Tell the attribute how to get data out of colorBuffer (ARRAY_BUFFER)
-    // var size = 3;                 // 3 components per iteration
-    // var type = gl.UNSIGNED_BYTE;  // the data is 8bit unsigned values
-    // var normalize = true;         // normalize the data (convert from 0-255 to 0-1)
-    // var stride = 0;               // 0 = move forward size * sizeof(type) each iteration to get the next position
-    // var offset = 0;               // start at the beginning of the buffer
-    // gl.vertexAttribPointer(
-    //     colorLocation, size, type, normalize, stride, offset);
+    // Tell the attribute how to get data out of colorBuffer (ARRAY_BUFFER)
+    var size = 3;                 // 3 components per iteration
+    var type = gl.UNSIGNED_BYTE;  // the data is 8bit unsigned values
+    var normalize = true;         // normalize the data (convert from 0-255 to 0-1)
+    var stride = 0;               // 0 = move forward size * sizeof(type) each iteration to get the next position
+    var offset = 0;               // start at the beginning of the buffer
+    gl.vertexAttribPointer(
+        colorLocation, size, type, normalize, stride, offset);
 
     // Set the matrix.
     gl.uniformMatrix4fv(matrixLocation, false, matrix);
@@ -257,35 +272,51 @@ function setTexcoords(gl) {
         gl.ARRAY_BUFFER,
         new Float32Array([
             // Front
-            0.0,  0.0,
-            1.0,  0.0,
-            1.0,  1.0,
-            0.0,  1.0,
+            0, 0,
+            0, 1,
+            1, 0,
+            0, 1,
+            1, 1,
+            1, 0,
+            
             // Back
-            0.0,  0.0,
-            1.0,  0.0,
-            1.0,  1.0,
-            0.0,  1.0,
-            // Top
-            0.0,  0.0,
-            1.0,  0.0,
-            1.0,  1.0,
-            0.0,  1.0,
-            // Bottom
-            0.0,  0.0,
-            1.0,  0.0,
-            1.0,  1.0,
-            0.0,  1.0,
+            0, 0,
+            1, 0,
+            0, 1,
+            0, 1,
+            1, 0,
+            1, 1,
+            
             // Right
-            0.0,  0.0,
-            1.0,  0.0,
-            1.0,  1.0,
-            0.0,  1.0,
+            0, 0,
+            1, 0,
+            1, 1,
+            0, 0,
+            1, 1,
+            0, 1,
+
             // Left
-            0.0,  0.0,
-            1.0,  0.0,
-            1.0,  1.0,
-            0.0,  1.0,
+            0, 0,
+            1, 1,
+            1, 0,
+            0, 0,
+            0, 1,
+            1, 1,
+
+            // Top
+            0, 0,
+            0, 1,
+            1, 0,
+            0, 1,
+            1, 1,
+            1, 0,
+
+            0, 0,
+            1, 0,
+            0, 1, 
+            0, 1,
+            1, 0,
+            1, 1,
         ]),
         gl.STATIC_DRAW);
 }

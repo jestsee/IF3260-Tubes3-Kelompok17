@@ -108,12 +108,14 @@ class Cube {
         var projMatrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 800);
         var matrix = m4.multiply(projMatrix, this.worldMatrix)
 
+        // console.log(shading);
+
         switch (this.type) {
             case 0: // model berwarna biasa
-                draw(this.position, matrix, true);
+                draw(this.position, matrix, true, this.rotate, shading);
                 break;
             case 1: // model tidak berwarna/transparan (buat joint)
-                draw(this.position, matrix, false);
+                draw(this.position, matrix, false, this.rotate, shading);
                 break;  
             case 2: // model dengan image mapping
                 // console.log("masuk case 2");

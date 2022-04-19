@@ -10,7 +10,8 @@
    
    'uniform mat4 u_matrix;',
    'uniform mat4 u_worldViewProjection;',
-   'uniform mat4 u_world;',
+  //  'uniform mat4 u_world;',
+   'uniform mat4 u_worldInverseTranspose;',
  
    'varying vec4 v_color;',
    'varying vec2 v_texcoord;',
@@ -18,10 +19,12 @@
    
    'void main()',
    '{',
-   '  gl_Position = u_matrix * a_position;',
+    '  gl_Position = u_matrix * a_position;',
+  //  '  gl_Position = u_worldViewProjection * a_position;',
    '  v_color = a_color;',
    '  v_texcoord = a_texcoord;',
-   '  v_normal = a_normal;',
+
+   '  v_normal = mat3(u_worldInverseTranspose) * a_normal;',
    '}'
    ].join('\n'))
  gl.compileShader(vertexShader)
@@ -36,6 +39,7 @@
    
    'uniform sampler2D u_texture;',
    'uniform bool u_texture_bool;',
+   'uniform bool u_shading_bool;',
    'uniform vec3 u_reverseLightDirection;',
 
    'void main()',
@@ -47,10 +51,13 @@
    '    temp = v_color;',
    '  }',
 
-   '  vec3 normal = normalize(v_normal);',
-   '  float light = dot(normal, u_reverseLightDirection);',
    '  gl_FragColor = vec4(temp);',
-   '  gl_FragColor.rgb *= light;',
+
+   '  if (u_shading_bool) {',
+   '    vec3 normal = normalize(v_normal);',
+   '    float light = dot(normal, u_reverseLightDirection);',
+   '    gl_FragColor.rgb *= light;',
+   '  }',
    '}'
    ].join('\n'))
  gl.compileShader(fragmentShader)
