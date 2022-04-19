@@ -1,5 +1,6 @@
 // global variable
 shading = false;
+isAnimating = false;
 
 // head, neck, torso
 var head = new Cube({scale:[1,1,0.7], type:2});
@@ -111,13 +112,15 @@ function drawSceneWithAnim(time) {
     });
   
     wholeBody.draw();
-  
-    requestAnimationFrame(drawSceneWithAnim);
-    n+=1;
+    
+    if (isAnimating) {
+        requestAnimationFrame(drawSceneWithAnim);
+        n+=1;
+    }
     // console.log(n);
 }
 
-requestAnimationFrame(drawSceneWithAnim);
+// drawSceneWithAnim();
 
 // rotation
 // wholeBody.xRotate(90);
