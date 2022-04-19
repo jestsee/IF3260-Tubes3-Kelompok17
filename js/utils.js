@@ -722,6 +722,58 @@ function generateColor(n) {
   
       return dst;
     },
+
+    perspective: function(fieldOfViewInRadians, aspect, near, far, dst) {
+      dst = dst || new Float32Array(16);
+      var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
+      var rangeInv = 1.0 / (near - far);
+  
+      dst[ 0] = f / aspect;
+      dst[ 1] = 0;
+      dst[ 2] = 0;
+      dst[ 3] = 0;
+      dst[ 4] = 0;
+      dst[ 5] = f;
+      dst[ 6] = 0;
+      dst[ 7] = 0;
+      dst[ 8] = 0;
+      dst[ 9] = 0;
+      dst[10] = (near + far) * rangeInv;
+      dst[11] = -1;
+      dst[12] = 0;
+      dst[13] = 0;
+      dst[14] = near * far * rangeInv * 2;
+      dst[15] = 0;
+  
+      return dst;
+    },
+
+    lookAt: function(cameraPosition, target, up, dst) {
+      dst = dst || new Float32Array(16);
+      var zAxis = m4.normalize(
+          subtractVectors(cameraPosition, target));
+      var xAxis = m4.normalize(cross(up, zAxis));
+      var yAxis = m4.normalize(cross(zAxis, xAxis));
+  
+      dst[ 0] = xAxis[0];
+      dst[ 1] = xAxis[1];
+      dst[ 2] = xAxis[2];
+      dst[ 3] = 0;
+      dst[ 4] = yAxis[0];
+      dst[ 5] = yAxis[1];
+      dst[ 6] = yAxis[2];
+      dst[ 7] = 0;
+      dst[ 8] = zAxis[0];
+      dst[ 9] = zAxis[1];
+      dst[10] = zAxis[2];
+      dst[11] = 0;
+      dst[12] = cameraPosition[0];
+      dst[13] = cameraPosition[1];
+      dst[14] = cameraPosition[2];
+      dst[15] = 1;
+  
+      return dst;
+    },
   
     translate: function(m, tx, ty, tz) {
       return m4.multiply(m, m4.translation(tx, ty, tz));
@@ -744,3 +796,35 @@ function generateColor(n) {
     },
   
   };
+
+  /**
+   * subtracts 2 vectors3s
+   * @param {Vector3} a a
+   * @param {Vector3} b b
+   * @param {Vector3} dst optional vector3 to store result
+   * @return {Vector3} dst or new Vector3 if not provided
+   * @memberOf module:webgl-3d-math
+   */
+   function subtractVectors(a, b, dst) {
+    dst = dst || new Float32Array(3);
+    dst[0] = a[0] - b[0];
+    dst[1] = a[1] - b[1];
+    dst[2] = a[2] - b[2];
+    return dst;
+  }
+
+  /**
+   * Computes the cross product of 2 vectors3s
+   * @param {Vector3} a a
+   * @param {Vector3} b b
+   * @param {Vector3} dst optional vector3 to store result
+   * @return {Vector3} dst or new Vector3 if not provided
+   * @memberOf module:webgl-3d-math
+   */
+   function cross(a, b, dst) {
+    dst = dst || new Float32Array(3);
+    dst[0] = a[1] * b[2] - a[2] * b[1];
+    dst[1] = a[2] * b[0] - a[0] * b[2];
+    dst[2] = a[0] * b[1] - a[1] * b[0];
+    return dst;
+  }

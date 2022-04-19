@@ -9,8 +9,7 @@
    'attribute vec3 a_normal;',
    
    'uniform mat4 u_matrix;',
-   'uniform mat4 u_worldViewProjection;',
-  //  'uniform mat4 u_world;',
+  //  'uniform mat4 u_worldViewProjection;',
    'uniform mat4 u_worldInverseTranspose;',
  
    'varying vec4 v_color;',

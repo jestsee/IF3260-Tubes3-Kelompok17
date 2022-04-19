@@ -106,17 +106,25 @@ function draw (arrPosition, matrix, withColor, arrRotate, shading) {
     gl.vertexAttribPointer(
         colorLocation, size, type, normalize, stride, offset);
 
+    // ---------------------------------------------------------------
+
+    // Make a view matrix from the camera matrix.
+    // var viewMatrix = m4.inverse(cameraMatrix);
+
+    // Compute a view projection matrix
+    // var viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix);
+
     // Draw cube at the origin
-    var worldMatrix = m4.yRotation(arrRotate[1]);
+    // var worldMatrix = m4.yRotation(arrRotate[1]);
     
     // Multiply the matrices.
-    var worldViewProjectionMatrix = m4.multiply(matrix, worldMatrix);
-    var worldInverseMatrix = m4.inverse(worldMatrix);
+    // var worldViewProjectionMatrix = m4.multiply(viewProjectionMatrix, worldMatrix);
+    var worldInverseMatrix = m4.inverse(matrix);
     var worldInverseTransposeMatrix = m4.transpose(worldInverseMatrix);
 
     // Set the matrix.
     gl.uniformMatrix4fv(matrixLocation, false, matrix);
-    // gl.uniformMatrix4fv(worldLocation, false, worldMatrix);
+    // gl.uniformMatrix4fv(worldViewProjectionLocation, false, worldViewProjectionMatrix);
     gl.uniformMatrix4fv(worldInverseTransposeLocation, false, worldInverseTransposeMatrix);
 
     // Tell the shader to use texture unit 0 for u_texture
