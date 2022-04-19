@@ -81,6 +81,7 @@ objects = [
 
 
 let n = 1;
+n1 = n;
 
 function drawSceneWithAnim(time) {
     // console.log("draw scene called");
@@ -88,11 +89,11 @@ function drawSceneWithAnim(time) {
   
     // update the local matrices for each object.
     wholeBody.yRotate(n);
-    leftUpperArmJoint.xRotate(n);
-    rightUpperArmJoint.xRotate(-n);
+    leftUpperArmJoint.xRotate(n1);
+    rightUpperArmJoint.xRotate(-n1);
 
-    leftUpperLegJoint.xRotate(n);
-    rightUpperLegJoint.xRotate(-n);
+    leftUpperLegJoint.xRotate(n1);
+    rightUpperLegJoint.xRotate(-n1);
 
      objects.forEach(obj => {
         obj.localMatrix = obj.generateMatrix();
@@ -101,10 +102,11 @@ function drawSceneWithAnim(time) {
     wholeBody.draw();
   
     requestAnimationFrame(drawSceneWithAnim);
-    if(n==90) {
-        n= -90;
+    if(n1==90) {
+        n1= -90;
     }
     n+=1;
+    n1+=1;
     console.log(n);
 }
 
