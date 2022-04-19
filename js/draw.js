@@ -1,8 +1,4 @@
- // Asynchronously load an image
- var image = new Image();
- image.src = "../img/pattern.jpg";
-
- function draw (arrPosition, matrix, withColor) {
+function draw (arrPosition, matrix, withColor) {
     // look up where the vertex data needs to go.
     var positionLocation = gl.getAttribLocation(program, "a_position");
     var colorLocation = gl.getAttribLocation(program, "a_color");
@@ -89,7 +85,8 @@
 }
 
 async function drawTexImage (arrPosition, matrix, withColor) {
-    const img = await loadImage("../img/pattern.jpg");
+    const url = "../img/pattern.jpg"
+    const img = await loadImage(url);
     _drawTexImage(arrPosition, matrix, withColor, img);
 }
 
@@ -262,6 +259,7 @@ function setTexcoords(gl) {
 function loadImage(url) {
     return new Promise((resolve, reject) => {
         const img = new Image();
+        img.crossOrigin = "anonymous";
         img.onload = () => resolve(img);
         img.onerror = reject;
         img.src = url;
