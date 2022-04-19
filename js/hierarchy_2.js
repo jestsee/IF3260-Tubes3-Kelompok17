@@ -1,8 +1,8 @@
 // head, neck, torso
-var head = new Cube({scale:[2,2,1]});
+var head = new Cube({scale:[2,2,1], type:3});
 
-var wholeBody = new Cube({translation:[0,0,0], withColor:false});
-var headJoint = new Cube({translation:[0,-80,0], withColor:false});
+var wholeBody = new Cube({translation:[0,0,0], type:1});
+var headJoint = new Cube({translation:[0,-80,0], type:1});
 
 // arms
 var leftUpperArm = new Cube({scale:[0.4, 0.7, 1]})
@@ -10,10 +10,10 @@ var leftLowerArm = new Cube({scale:[0.4, 0.3, 1]})
 var rightUpperArm = new Cube({scale:[0.4, 0.7, 1]})
 var rightLowerArm = new Cube({scale:[0.4, 0.3, 1]})
 
-var leftUpperArmJoint = new Cube({translation:[-122,-10,0], withColor:false});
-var leftLowerArmJoint = new Cube({translation:[0,53,0], withColor:false});
-var rightUpperArmJoint = new Cube({translation:[122,-10,0], withColor:false});
-var rightLowerArmJoint = new Cube({translation:[0,53,0], withColor:false});
+var leftUpperArmJoint = new Cube({translation:[-122,-10,0], type:1});
+var leftLowerArmJoint = new Cube({translation:[0,53,0], type:1});
+var rightUpperArmJoint = new Cube({translation:[122,-10,0], type:1});
+var rightLowerArmJoint = new Cube({translation:[0,53,0], type:1});
 
 leftUpperArmJoint.moveCenterToUpmost();
 leftLowerArmJoint.moveCenterToUpmost();
@@ -26,10 +26,10 @@ var leftLowerLeg = new Cube({scale:[0.6, 0.3, 1]})
 var rightUpperLeg = new Cube({scale:[0.5, 1.5, 1]})
 var rightLowerLeg = new Cube({scale:[0.6, 0.3, 1]})
 
-var leftUpperLegJoint = new Cube({translation:[-36,100,1], withColor:false});
-var leftLowerLegJoint = new Cube({translation:[0,101,1], withColor:false});
-var rightUpperLegJoint = new Cube({translation:[36,100,1], withColor:false});
-var rightLowerLegJoint = new Cube({translation:[0,101,1], withColor:false});
+var leftUpperLegJoint = new Cube({translation:[-36,100,1], type:1});
+var leftLowerLegJoint = new Cube({translation:[0,101,1], type:1});
+var rightUpperLegJoint = new Cube({translation:[36,100,1], type:1});
+var rightLowerLegJoint = new Cube({translation:[0,101,1], type:1});
 
 leftUpperLegJoint.moveCenterToUpmost();
 leftLowerLegJoint.moveCenterToUpmost();
@@ -107,7 +107,7 @@ function drawSceneWithAnim(time) {
     }
     n+=1;
     n1+=1;
-    console.log(n);
+    //console.log(n);
 }
 
 requestAnimationFrame(drawSceneWithAnim);
