@@ -601,6 +601,18 @@ function generateColor(n) {
         0,  0,  0,  1,
       ];
     },
+
+    normalize: function(v, dst) {
+      dst = dst || new Float32Array(3);
+      var length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+      // make sure we don't divide by 0.
+      if (length > 0.00001) {
+        dst[0] = v[0] / length;
+        dst[1] = v[1] / length;
+        dst[2] = v[2] / length;
+      }
+      return dst;
+    },
   
     translate: function(m, tx, ty, tz) {
       return m4.multiply(m, m4.translation(tx, ty, tz));
