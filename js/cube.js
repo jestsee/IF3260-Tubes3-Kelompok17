@@ -8,19 +8,22 @@ class Cube {
             rotate = [0, 0, 0],
             translation = [0, 0, 0],
             scale = [1, 1, 1],
-            withColor = true
+            
+            type = 0
         } = {}
     ) {
         this.center = center;
         this.length = length;
         this.width = width;
         this.height = height;
-        this.withColor = withColor;
+        // this.withColor = withColor;
         
         this.position = this.generatePosition();
         this.rotate = rotate;
         this.translation = translation;
         this.scale = scale;
+
+        this.type = type;
         
         // node properties
         this.localMatrix = this.generateMatrix();
@@ -104,7 +107,21 @@ class Cube {
     iterateDraw() {
         var projMatrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 800);
         var matrix = m4.multiply(projMatrix, this.worldMatrix)
-        draw(this.position, matrix, this.withColor);
+
+        switch (this.type) {
+            case 0: // model berwarna biasa
+                draw(this.position, matrix, true);
+                break;
+            case 1: // model tidak berwarna/transparan (buat joint)
+                draw(this.position, matrix, false);
+                break;  
+            case 2: // model dengan image mapping
+                // console.log("masuk case 2");
+                drawTexImage(this.position, matrix, true);
+                break;
+        }
+
+        // draw(this.position, matrix, this.withColor);
 
         if (this.children.length != 0) {
             this.children.forEach(function(child) {

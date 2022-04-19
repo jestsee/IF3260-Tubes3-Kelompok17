@@ -1,11 +1,11 @@
 // head, neck, torso
 var head = new Cube({scale:[1,1,0.7]});
 var neck = new Cube({scale:[0.5,0.5,0.5]});
-var torso = new Cube({scale:[1.5,2,1]});
+var torso = new Cube({scale:[1.5,2,1], type:2});
 
-var wholeBody = new Cube({translation:[0,0,0], withColor:false});
-var neckJoint = new Cube({translation:[0,-130,0], withColor:false});
-var headJoint = new Cube({translation:[0,-80,0], withColor:false});
+var wholeBody = new Cube({translation:[0,0,0], type:1});
+var neckJoint = new Cube({translation:[0,-130,0], type:1});
+var headJoint = new Cube({translation:[0,-80,0], type:1});
 
 // arms
 var leftUpperArm = new Cube({scale:[0.4, 1.2, 0.4]})
@@ -13,10 +13,10 @@ var leftLowerArm = new Cube({scale:[0.4, 1.2, 0.4]})
 var rightUpperArm = new Cube({scale:[0.4, 1.2, 0.4]})
 var rightLowerArm = new Cube({scale:[0.4, 1.2, 0.4]})
 
-var leftUpperArmJoint = new Cube({translation:[-100,-20,0], withColor:false});
-var leftLowerArmJoint = new Cube({translation:[0,125,0], withColor:false});
-var rightUpperArmJoint = new Cube({translation:[100,-20,0], withColor:false});
-var rightLowerArmJoint = new Cube({translation:[0,125,0], withColor:false});
+var leftUpperArmJoint = new Cube({translation:[-100,-20,0], type:1});
+var leftLowerArmJoint = new Cube({translation:[0,125,0], type:1});
+var rightUpperArmJoint = new Cube({translation:[100,-20,0], type:1});
+var rightLowerArmJoint = new Cube({translation:[0,125,0], type:1});
 
 leftUpperArmJoint.moveCenterToUpmost();
 leftLowerArmJoint.moveCenterToUpmost();
@@ -24,15 +24,15 @@ rightUpperArmJoint.moveCenterToUpmost();
 rightLowerArmJoint.moveCenterToUpmost();
 
 // legs
-var leftUpperLeg = new Cube({scale:[0.6, 1.6, 0.6]})
+var leftUpperLeg = new Cube({scale:[0.6, 1.6, 0.6], type:2}) // pake celana ceritanya
 var leftLowerLeg = new Cube({scale:[0.5, 1.8, 0.5]})
-var rightUpperLeg = new Cube({scale:[0.6, 1.6, 0.6]})
+var rightUpperLeg = new Cube({scale:[0.6, 1.6, 0.6], type:2})
 var rightLowerLeg = new Cube({scale:[0.5, 1.8, 0.5]})
 
-var leftUpperLegJoint = new Cube({translation:[-35,185,0], withColor:false});
-var leftLowerLegJoint = new Cube({translation:[0,175,0], withColor:false});
-var rightUpperLegJoint = new Cube({translation:[35,185,0], withColor:false});
-var rightLowerLegJoint = new Cube({translation:[0,175,0], withColor:false});
+var leftUpperLegJoint = new Cube({translation:[-35,185,0], type:1});
+var leftLowerLegJoint = new Cube({translation:[0,175,0], type:1});
+var rightUpperLegJoint = new Cube({translation:[35,185,0], type:1});
+var rightLowerLegJoint = new Cube({translation:[0,175,0], type:1});
 
 leftUpperLegJoint.moveCenterToUpmost();
 leftLowerLegJoint.moveCenterToUpmost();
