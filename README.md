@@ -4,6 +4,7 @@ Proyek ini membuat tiga buah articulated model. Model yang dirancang berupa obje
 Website memiliki interaksi sebagai berikut:  
 - Bagian-bagian dari model dapat dibuat bergerak, yaitu rotasi pada bagian sendi  
 - Dapat menjalankan animasi yang membuat seluruh objek dapat bergerak secara serentak  
+- Dapat mendekatkan dan menjauhkan posisi kamera dengan arah yang tetap
 - Menambahkan warna dasar pada model tersebut dengan menggunakan teknik shading maupun tanpa shading  
 
 ## Cara Menggunakan
