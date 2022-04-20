@@ -202,4 +202,27 @@ class Model_1 {
             model_1.draw();
         }, -90)
     }
+
+    save() {
+        var toSave = [];
+        this.objects.forEach(obj => {
+            let object = {
+                "rotate": obj.rotate,
+                "translation" : obj.translation,
+                "scale" : obj.scale,
+                //"children" : obj.children,
+            }
+            toSave.push(object);
+        });
+        this.download(JSON.stringify(toSave, null, 4), 'data.json', 'text/plain');  
+              
+    }
+    
+    download(content, fileName, contentType) {
+        var a = document.createElement("a");
+        var file = new Blob([content], {type: contentType});
+        a.href = URL.createObjectURL(file);
+        a.download = fileName;
+        a.click();
+    }
 }

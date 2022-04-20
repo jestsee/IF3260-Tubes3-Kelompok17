@@ -8,6 +8,56 @@ function shadingSwitch() {
     model_1.wholeBody.draw();
 }
 
+function save() {
+    model_1.save();
+}
+
+function load() {
+    var file = document.getElementById('myfile').files[0];
+    if(file == null) {
+        window.confirm("File untuk diunggah belum dipilih!")
+        return
+    }
+
+    //var model_1 = new Model_1();
+
+    var reader = new FileReader()
+    reader.onload = function() {
+        var model_1 = new Model_1();
+        console.log(model_1);
+        var fileContent = JSON.parse(reader.result);
+        objects = [
+            "torso", "head", "neck",
+            "headJoint", "wholeBody", "neckJoint",
+        
+            "leftUpperArm", "leftUpperArmJoint",
+            "leftLowerArm", "leftLowerArmJoint",
+            "rightUpperArm", "rightUpperArmJoint",
+            "rightLowerArm", "rightLowerArmJoint",
+
+            "leftUpperLeg", "leftUpperLegJoint",
+            "leftLowerLeg", "leftLowerLegJoint",
+            "rightUpperLeg", "rightUpperLegJoint",
+            "rightLowerLeg", "rightLowerLegJoint",
+        ];
+        for(let i=0; i<fileContent.length; i++) {
+            console.log(model_1[objects[i]]);
+            model = fileContent[i];
+            //model_1.objects[i].rotate = model.rotate;
+            model_1[objects[i]].rotate = model.rotate;
+            model_1[objects[i]].translation = model.translation;
+            model_1[objects[i]].scale = model.scale;
+        }
+        model_1.setup();
+        model_1.draw();
+    };
+    reader.readAsText(file);
+    
+    window.onload = function() {
+      model_1.displaySliders();
+    }
+}
+
 function startAnimation() {
     var btn = document.getElementById('startBtn');
 
