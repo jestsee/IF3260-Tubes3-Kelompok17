@@ -52,19 +52,6 @@ class Cube {
         matrix = m4.zRotate(matrix, degToRad(this.rotate[2]));
         matrix = m4.translate(matrix, -this.center[0], -this.center[1], -this.center[2]);
 
-        // ----------------------------------------------------------------------------
-
-        // rotasi bukan di titik pusat (translate - rotate- scale)
-        // var translation = this.translation;
-        // var rotation = [degToRad(this.rotate[0]), degToRad(this.rotate[1]), degToRad(this.rotate[2])];
-        // var scale = this.scale;
-
-        // matrix = m4.translate(matrix, translation[0], translation[1], translation[2]);
-        // matrix = m4.xRotate(matrix, rotation[0]);
-        // matrix = m4.yRotate(matrix, rotation[1]);
-        // matrix = m4.zRotate(matrix, rotation[2]);
-        // matrix = m4.scale(matrix, scale[0], scale[1], scale[2]);
-
         return matrix
     }
 
@@ -108,12 +95,14 @@ class Cube {
         var projMatrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 800);
         var matrix = m4.multiply(projMatrix, this.worldMatrix)
 
+        // console.log(shading);
+
         switch (this.type) {
             case 0: // model berwarna biasa
-                draw(this.position, matrix, true);
+                draw(this.position, matrix, true, shading);
                 break;
             case 1: // model tidak berwarna/transparan (buat joint)
-                draw(this.position, matrix, false);
+                draw(this.position, matrix, false, shading);
                 break;  
             case 2: // model dengan image mapping
                 // console.log("masuk case 2");
@@ -172,34 +161,5 @@ class Cube {
 
     zScale(n) {
         this.scale[2] = n
-    }
-
-    setInitialSliderValue() {
-        var rx = document.getElementById('xrotation')
-        rx.value = this.rotate[0]
-
-        var ry = document.getElementById('yrotation')
-        ry.value = this.rotate[1]
-
-        var rz = document.getElementById('zrotation')
-        rz.value = this.rotate[2]
-
-        var tx = document.getElementById('xtranslation')
-        tx.value = this.translation[0]
-
-        var ty = document.getElementById('ytranslation')
-        ty.value = this.translation[1]
-
-        var tz = document.getElementById('ztranslation')
-        tz.value = this.translation[2]
-
-        var sx = document.getElementById('xscale')
-        sx.value = this.scale[0]
-
-        var sy = document.getElementById('yscale')
-        sy.value = this.scale[1]
-
-        var sz = document.getElementById('zscale')
-        sz.value = this.scale[2]
     }
 }
