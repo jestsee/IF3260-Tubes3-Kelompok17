@@ -67,7 +67,6 @@ void main()
  float Kd = max(dot(NN, LL), 0.0);
  vec4 ambient = vec4(0.2, 0.2, 0.2, 0.0);
  gl_FragColor = ambient + vec4(Kd*diffuseProduct.xyz, 1.0);
-
 }
 </script>
 
@@ -79,10 +78,22 @@ void main()
   <script type="text/javascript" src="../js/MV.js"></script>
   <script type="text/javascript" src="../js/cube.js"></script>
   <script type="text/javascript" src="../js/utils.js"></script>
+  <script type="text/javascript" src="../js/states.js"></script>
+  <script type="text/javascript" src="../js/controllers.js"></script>
   <script type="text/javascript" src="../js/bump_1.js"></script>
   <script type="text/javascript" src="../js/draw.js"></script>
 
 </div><br/>
+
+<div class="tools">
+  <label for="shading-switch">SHADING</label>
+  <label class="switch">
+    <input type="checkbox" id="shading">
+    <span class="slider round"></span>
+  </label>
+
+  <button type="button" id="startBtn">Start Animation</button>
+</div>
 
 </body>
 </html>
