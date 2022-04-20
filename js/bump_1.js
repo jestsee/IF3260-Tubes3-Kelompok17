@@ -1,9 +1,6 @@
 "use strict";
 
-let canvas;
-let gl;
-let program;
-let reverse = false;
+
 let projectionMatrix;
 let modelViewMatrix;
 var texSize = 256;
@@ -99,8 +96,6 @@ function scale4(a, b, c) {
 }
 
 function init_objects() {
-    canvas = document.getElementById("gl-canvas");
-
     head = new Cube({scale:[2,2,1],translation:[0,0,0],type:3});
     rightUpperArm = new Cube({scale:[0.4, 1, 0.1], translation:[1.3,0,0], type:3})
     leftUpperArm = new Cube({scale:[0.4, 1, 0.1], translation:[-1.3,0,0], type:3})
@@ -120,7 +115,6 @@ function init_objects() {
     rightLowerLeg.setParent(rightUpperLeg)
     leftLowerLeg.setParent(leftUpperLeg)
 }
-
 
 function quad(a, b, c, d) {
     pointsArray.push(vertices[a]);
@@ -159,6 +153,12 @@ var leftUpperLeg;
 var leftLowerLeg;
 var rightUpperLeg;
 var rightLowerLeg;
+var wholeBody;
+var headJoint;
+var leftUpperArmJoint;
+var leftLowerArmJoint;
+var rightUpperArmJoint;
+var rightLowerArmJoint;
 
 window.onload = function init() {
     init_objects();
@@ -167,18 +167,12 @@ window.onload = function init() {
 
 
 let draw_bump_init = function() {
-    canvas = document.getElementById("gl-canvas");
-
-    gl = WebGLUtils.setupWebGL(canvas);
-    if (!gl) {
-        alert("WebGL isn't available");
-    }
 
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
 
-    program = initShaders(gl, "vertex-shader", "fragment-shader");
+    //program = initShaders(gl, "vertex-shader", "fragment-shader");
 
     gl.useProgram(program);
 
@@ -240,5 +234,5 @@ let draw_bump_init = function() {
     gl.uniformMatrix4fv( gl.getUniformLocation(program, "modelViewMatrix"), false, flatten(modelViewMatrix));
     gl.uniformMatrix4fv( gl.getUniformLocation(program, "projectionMatrix"), false, flatten(projectionMatrix));
 
-    head.iterateDraw();
+    head.draw();
 }

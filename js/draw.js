@@ -93,7 +93,9 @@ async function drawTexImage (arrPosition, matrix, withColor) {
 
 function draw_bump(translation, scale) {
     var bumpBool = gl.getUniformLocation(program, "u_bump_bool");
+    var textureBool = gl.getUniformLocation(program, "u_texture_bool");
     gl.uniform1i(bumpBool, true);
+    gl.uniform1i(textureBool, true);
     instanceMatrix = mult(modelViewMatrix, translate(translation[0], translation[1], translation[2]));
     instanceMatrix = mult(instanceMatrix, scale4(scale[0], scale[1], scale[2]));
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
