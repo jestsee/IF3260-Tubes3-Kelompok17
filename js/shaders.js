@@ -31,28 +31,6 @@
    'void main()',
    '{',
    '  if (u_bump_bool) {',
-      'gl_Position = projectionMatrix*modelViewMatrix*vPosition;',
-
-      'fTexCoord = vTexCoord;',
-
-      'vec3 eyePosition = (modelViewMatrix*vPosition).xyz;',
-      'vec3 eyeLightPos = (modelViewMatrix*lightPosition).xyz;',
-
-      'vec3 N = normalize(normalMatrix*normal.xyz);',
-      'vec3 T  = normalize(normalMatrix*objTangent);',
-      'vec3 B = cross(N, T);',
-
-      'L.x = dot(T, eyeLightPos-eyePosition);',
-      'L.y = dot(B, eyeLightPos-eyePosition);',
-      'L.z = dot(N, eyeLightPos-eyePosition);',
-
-      'L = normalize(L);',
-
-      'V.x = dot(T, -eyePosition);',
-      'V.y = dot(B, -eyePosition);',
-      'V.z = dot(N, -eyePosition);',
-
-      'V = normalize(V);',
    ' } ',
    ' else {',
    '  gl_Position = u_matrix * a_position;',
@@ -85,11 +63,6 @@
    '  if (u_texture_bool) {',
   //  '    gl_FragColor = textureCube(u_texture, normalize(v_normal));',
    '    if(u_bump_bool) {',
-        '   vec4 N = texture2D(texMap, fTexCoord);',
-        '   vec3 NN =  normalize(2.0*N.xyz-1.0);',
-        '   vec3 LL = normalize(L);',
-        '   float Kd = max(dot(NN, LL), 0.0);',
-        '   gl_FragColor = vec4(Kd*diffuseProduct.xyz, 1.0);',
    '    }',
    '    else {',
    '      gl_FragColor = texture2D(u_texture, v_texcoord);',
@@ -101,6 +74,7 @@
    ].join('\n'))
  gl.compileShader(fragmentShader)
  
+
  var program = gl.createProgram()
  gl.attachShader(program, vertexShader)
  gl.attachShader(program, fragmentShader)

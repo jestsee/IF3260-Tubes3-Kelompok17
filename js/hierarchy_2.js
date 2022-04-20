@@ -1,5 +1,5 @@
 // head, neck, torso
-var head = new Cube({scale:[2,2,1], type:3});
+var head = new Cube({scale:[2,2,1], type:1});
 
 var wholeBody = new Cube({translation:[0,0,0], type:1});
 var headJoint = new Cube({translation:[0,-80,0], type:1});
