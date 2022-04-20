@@ -108,6 +108,9 @@ class Cube {
                 // console.log("masuk case 2");
                 drawTexImage(this.position, matrix, true);
                 break;
+            case 3:
+                draw_bump(this.rotate, this.translation, this.scale);
+                break;
         }
 
         // draw(this.position, matrix, this.withColor);

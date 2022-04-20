@@ -813,18 +813,18 @@ function generateColor(n) {
     return dst;
   }
 
-  /**
-   * Computes the cross product of 2 vectors3s
-   * @param {Vector3} a a
-   * @param {Vector3} b b
-   * @param {Vector3} dst optional vector3 to store result
-   * @return {Vector3} dst or new Vector3 if not provided
-   * @memberOf module:webgl-3d-math
-   */
-   function cross(a, b, dst) {
-    dst = dst || new Float32Array(3);
-    dst[0] = a[1] * b[2] - a[2] * b[1];
-    dst[1] = a[2] * b[0] - a[0] * b[2];
-    dst[2] = a[0] * b[1] - a[1] * b[0];
-    return dst;
-  }
+  // /**
+  //  * Computes the cross product of 2 vectors3s
+  //  * @param {Vector3} a a
+  //  * @param {Vector3} b b
+  //  * @param {Vector3} dst optional vector3 to store result
+  //  * @return {Vector3} dst or new Vector3 if not provided
+  //  * @memberOf module:webgl-3d-math
+  //  */
+  //  function cross(a, b, dst) {
+  //   dst = dst || new Float32Array(3);
+  //   dst[0] = a[1] * b[2] - a[2] * b[1];
+  //   dst[1] = a[2] * b[0] - a[0] * b[2];
+  //   dst[2] = a[0] * b[1] - a[1] * b[0];
+  //   return dst;
+  // }

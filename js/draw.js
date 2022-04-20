@@ -156,6 +156,21 @@ async function drawTexImage (arrPosition, matrix, withColor) {
     _drawTexImage(arrPosition, matrix, withColor, img);
 }
 
+
+function draw_bump(rotation, translation, scale) {
+    var bumpBool = gl.getUniformLocation(program, "u_bump_bool");
+    var textureBool = gl.getUniformLocation(program, "u_texture_bool");
+    gl.uniform1i(bumpBool, true);
+    gl.uniform1i(textureBool, true);
+    instanceMatrix = mult(modelViewMatrix, rotate(rotation[0],1,0,0));
+    instanceMatrix = mult(instanceMatrix, rotate(rotation[1],0,1,0));
+    instanceMatrix = mult(instanceMatrix, rotate(rotation[2],0,0,1));
+    instanceMatrix = mult(instanceMatrix, translate(translation[0], translation[1], translation[2]));
+    instanceMatrix = mult(instanceMatrix, scale4(scale[0], scale[1], scale[2]));
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 4 * i, 4);
+}
+
 function _drawTexImage (arrPosition, matrix, withColor, img) {
     // look up where the vertex data needs to go.
     var positionLocation = gl.getAttribLocation(program, "a_position");
@@ -335,6 +350,7 @@ function setTexcoords(gl) {
         ]),
         gl.STATIC_DRAW);
 }
+
 
 function setNormals(gl) {
     var normals = new Float32Array([
