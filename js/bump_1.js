@@ -4,6 +4,8 @@
 let projectionMatrix;
 let modelViewMatrix;
 var texSize = 256;
+var isAnimating = false;
+var shading = false;
 
 // Bump Data
 
@@ -71,6 +73,7 @@ var texCoord = [
 var lightDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
 
 var materialDiffuse = vec4( 0.7, 0.7, 0.7, 1.0 );
+
 
 function configureTexture( image ) {
     var texture = gl.createTexture();
@@ -184,7 +187,7 @@ var rightLowerArmJoint;
 
 window.onload = function init() {
     init_objects();
-    draw_bump_init();
+    draw_and_render();
 }
 
 
@@ -193,8 +196,6 @@ let draw_bump_init = function() {
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
-
-    //program = initShaders(gl, "vertex-shader", "fragment-shader");
 
     gl.useProgram(program);
 
@@ -225,20 +226,47 @@ let draw_bump_init = function() {
     var vTexCoord = gl.getAttribLocation( program, "vTexCoord");
     gl.vertexAttribPointer( vTexCoord, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vTexCoord);
-
+    //normals = new Uint8Array(3*texSize*texSize);
     configureTexture(normals);
 
     var diffuseProduct = mult(lightDiffuse, materialDiffuse);
 
-    gl.uniform4fv( gl.getUniformLocation(program, "diffuseProduct"),flatten(diffuseProduct));
     gl.uniform4fv( gl.getUniformLocation(program, "normal"),flatten(normal));
     gl.uniform3fv( gl.getUniformLocation(program, "objTangent"),flatten(tangent));
     gl.uniformMatrix3fv( gl.getUniformLocation(program, "normalMatrix"), false, flatten(normalMatrix));
+    
+    document.getElementById("shading").onclick = function(event) {
+        shading = !(shading);
+        draw_bump_init();
+    };
+
+    var btn = document.getElementById("startBtn");
+    btn.onclick = function(event) {
+        isAnimating = !isAnimating
+        if(isAnimating) {
+            btn.innerText = "Stop Animation";
+        }
+        else {
+            btn.innerText = "Start Animation";
+        }
+    }
 
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-    lightPosition[0] = 5.5*Math.sin(0.01);
-    lightPosition[2] = 5.5*Math.cos(0.01);
+    
+    if(shading==false) {
+        //diffuseProduct = vec4( 0.0, 0.0, 0.0, 0.0 );
+        gl.uniform4fv( gl.getUniformLocation(program, "diffuseProduct"),flatten(diffuseProduct));
+        lightPosition[0] = 0;
+        lightPosition[1] = 10;
+        lightPosition[2] = 0;
+    }
+    else {
+        gl.uniform4fv( gl.getUniformLocation(program, "diffuseProduct"),flatten(diffuseProduct));
+        lightPosition[0] = 5.5*Math.sin(0.01);
+        lightPosition[1] = 2;
+        lightPosition[2] = 5.5*Math.cos(0.01);
+    }
+    //
     gl.uniform4fv( gl.getUniformLocation(program, "lightPosition"),flatten(lightPosition));
 
     var eye = vec3(2.0, 2.0, 2.0);
@@ -255,6 +283,10 @@ let draw_bump_init = function() {
 
     gl.uniformMatrix4fv( gl.getUniformLocation(program, "modelViewMatrix"), false, flatten(modelViewMatrix));
     gl.uniformMatrix4fv( gl.getUniformLocation(program, "projectionMatrix"), false, flatten(projectionMatrix));
+}
+
+let draw_and_render = function() {
+    draw_bump_init();
     requestAnimationFrame(drawSceneWithAnim);
     head.draw();
 }
@@ -266,6 +298,10 @@ function drawSceneWithAnim(time) {
     time *= 0.0005;
   
     // update the local matrices for each object.
+    if(!isAnimating) {
+        n1=0;
+    }
+    
     rightUpperArm.xRotate(-n1);
     rightLowerArm.xRotate(-n1);
     leftUpperArm.xRotate(n1);
