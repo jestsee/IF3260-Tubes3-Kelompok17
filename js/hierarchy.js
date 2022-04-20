@@ -88,6 +88,8 @@ objects = [
 wholeBody.xScale(0.75);
 wholeBody.yScale(0.75);
 wholeBody.zScale(0.75);
+// wholeBody.xTranslation(200);
+// wholeBody.yTranslation(200);
 
 let n = 1;
 
@@ -124,8 +126,8 @@ function drawSceneWithAnim(time) {
 
 // rotation
 // wholeBody.xRotate(90);
-neckJoint.zRotate(0);
-head.zRotate(0);
+// neckJoint.zRotate(0);
+// head.zRotate(0);
 
 // update & draw
 objects.forEach(obj => {

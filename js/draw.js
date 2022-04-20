@@ -1,4 +1,7 @@
-function draw (arrPosition, matrix, withColor, arrRotate, shading) {
+// global variable
+var img = new Image();
+
+function draw (arrPosition, matrix, withColor, shading) {
     // console.log("draw called");
 
     // look up where the vertex data needs to go.
@@ -144,8 +147,12 @@ function draw (arrPosition, matrix, withColor, arrRotate, shading) {
 
 async function drawTexImage (arrPosition, matrix, withColor) {
     // console.log("drawTexImage called");
-    const url = "https://webglfundamentals.org/webgl/resources/f-texture.png";
-    const img = await loadImage(url);
+    // const url = "https://webglfundamentals.org/webgl/resources/f-texture.png";
+    const url = "../img/pattern.jpg";
+    if(img.naturalHeight == 0) {
+        console.log("masuk if");
+        img = await loadImage(url);
+    }
     _drawTexImage(arrPosition, matrix, withColor, img);
 }
 
@@ -463,7 +470,7 @@ function setNormals(gl) {
 
 function loadImage(url) {
     return new Promise((resolve, reject) => {
-        const img = new Image();
+        img = new Image();
         img.crossOrigin = "anonymous";
         img.onload = () => resolve(img);
         img.onerror = reject;
