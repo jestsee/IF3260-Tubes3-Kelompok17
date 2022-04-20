@@ -97,14 +97,18 @@ function scale4(a, b, c) {
 
 function init_objects() {
     head = new Cube({scale:[2,2,1],translation:[0,0,0],type:3});
-    rightUpperArm = new Cube({scale:[0.4, 1, 0.1], translation:[1.5,0,0], type:3})
-    leftUpperArm = new Cube({scale:[0.4, 1, 0.1], translation:[-1.5,0,0], type:3})
-    rightLowerArm = new Cube({scale:[0.5, 1, 0.1], translation:[1.5,-1,0], type:3})
-    leftLowerArm = new Cube({scale:[0.5, 1, 0.1], translation:[-1.5,-1,0], type:3})
-    rightUpperLeg = new Cube({scale:[0.4, 1, 0.1], translation:[0.5,-1.9,0], type:3})
-    leftUpperLeg = new Cube({scale:[0.4, 1, 0.1], translation:[-0.5,-1.9,0], type:3})
-    rightLowerLeg = new Cube({scale:[0.4, 0.7, 0.1], translation:[0.5,-2.9,0], type:3})
-    leftLowerLeg = new Cube({scale:[0.4, 0.7, 0.1], translation:[-0.5,-2.9,0], type:3})
+    rightUpperArm = new Cube({scale:[0.4, 1, 0.2], translation:[1.5,-0.5,0],type:3})
+    rightUpperArm.xRotate(-90);
+    leftUpperArm = new Cube({scale:[0.4, 1, 0.2], translation:[-1.5,-0.5,0], type:3})
+    leftUpperArm.xRotate(-90);
+    rightLowerArm = new Cube({scale:[0.5, 0.5, 0.2], translation:[1.5,-1.3,0], type:3})
+    rightLowerArm.xRotate(-90);
+    leftLowerArm = new Cube({scale:[0.5, 0.5, 0.2], translation:[-1.5,-1.3,0], type:3})
+    leftLowerArm.xRotate(-90);
+    rightUpperLeg = new Cube({scale:[0.4, 1, 0.2], translation:[0.5,-1.6,0], type:3})
+    leftUpperLeg = new Cube({scale:[0.4, 1, 0.2], translation:[-0.5,-1.6,0], type:3})
+    rightLowerLeg = new Cube({scale:[0.4, 0.5, 0.2], translation:[0.5,-2.5,0], type:3})
+    leftLowerLeg = new Cube({scale:[0.4, 0.5, 0.2], translation:[-0.5,-2.5,0], type:3})
 
     rightUpperArm.setParent(head)
     leftUpperArm.setParent(head)
@@ -262,23 +266,27 @@ function drawSceneWithAnim(time) {
     time *= 0.0005;
   
     // update the local matrices for each object.
-    head.yRotate(n);
-    //rightUpperArm.xRotate(-n1);
-    //rightLowerArm.xRotate(-n1);
-    //rightUpperArm.yRotate(-n1);
-    //rightLowerArm.yRotate(-n1);
-    //leftUpperArm.xRotate(n1);
-    //leftLowerArm.xRotate(n1);
-    //rightUpperLeg.xRotate(-n1);
-    //rightLowerLeg.xRotate(-n1);
-    //leftUpperLeg.xRotate(n1);
-    //leftLowerLeg.xRotate(n1);
+    rightUpperArm.xRotate(-n1);
+    rightLowerArm.xRotate(-n1);
+    leftUpperArm.xRotate(n1);
+    leftLowerArm.xRotate(n1);
+    rightUpperLeg.xRotate(-n1);
+    rightLowerLeg.xRotate(-n1);
+    leftUpperLeg.xRotate(n1);
+    leftLowerLeg.xRotate(n1);
     head.draw();
   
     requestAnimationFrame(drawSceneWithAnim);
-    if(n1==90) {
-        n1= -90;
+    if(n>=30) {
+        if(n1>-30) {
+            n1=n1-1;
+        }
+        else {
+            n=-30;
+        }
     }
-    n+=1;
-    n1+=1;
+    else {
+        n1=n1+1;
+    }
+    n=n+1;
 }
