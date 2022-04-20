@@ -202,6 +202,7 @@ let draw_bump_init = function() {
     gl.uniformMatrix4fv(gl.getUniformLocation(program, "modelViewMatrix"), false, flatten(modelViewMatrix));
     gl.uniformMatrix4fv(gl.getUniformLocation(program, "projectionMatrix"), false, flatten(projectionMatrix));
     modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix")
+
     var normalMatrix = mat4ToInverseMat3(modelViewMatrix);
 
     cube();
@@ -245,6 +246,15 @@ let draw_bump_init = function() {
             btn.innerText = "Start Animation";
         }
     }
+
+    var cameraRange = document.getElementById("camera");
+    var camera = document.getElementById("camera-value");
+
+    cameraRange.onclick = function(event) {
+        camera.innerHTML = cameraRange.value;
+        draw_bump_init();
+        modelViewMatrix = mult(modelViewMatrix, scale4(camera.innerHTML,camera.innerHTML,camera.innerHTML));
+    };
 
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
