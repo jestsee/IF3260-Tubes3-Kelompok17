@@ -178,15 +178,10 @@ var leftUpperLeg;
 var leftLowerLeg;
 var rightUpperLeg;
 var rightLowerLeg;
-var wholeBody;
-var headJoint;
-var leftUpperArmJoint;
-var leftLowerArmJoint;
-var rightUpperArmJoint;
-var rightLowerArmJoint;
 
 window.onload = function init() {
     init_objects();
+    displaySliders();
     draw_and_render();
 }
 
@@ -325,4 +320,153 @@ function drawSceneWithAnim(time) {
         n1=n1+1;
     }
     n=n+1;
+}
+
+function saveBump() {
+    var toSave = [];
+    //console.log(objects[i]);
+    var objects = [
+        head,
+        leftUpperArm,
+        leftLowerArm,
+        rightUpperArm,
+        rightLowerArm,
+        leftUpperLeg,
+        leftLowerLeg,
+        rightUpperLeg,
+        rightLowerLeg,   
+    ];    
+    console.log(objects[0]);
+    objects.forEach(obj => {
+        let object = {
+            "rotate": obj.rotate,
+            "translation" : obj.translation,
+            "scale" : obj.scale,
+            //"children" : obj.children,
+        }
+        //console.log(object);
+        toSave.push(object);
+    });
+    download(JSON.stringify(toSave, null, 4), 'data.json', 'text/plain');  
+}
+
+function download(content, fileName, contentType) {
+    var a = document.createElement("a");
+    var file = new Blob([content], {type: contentType});
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+}
+
+function loadBump() {
+    var file = document.getElementById('myfile').files[0];
+    if(file == null) {
+        window.confirm("File untuk diunggah belum dipilih!")
+        return
+    }
+
+    //var model_1 = new Model_1();
+
+    var reader = new FileReader()
+    reader.onload = function() {
+        var fileContent = JSON.parse(reader.result);
+        var objects = [
+            head,
+            leftUpperArm,
+            leftLowerArm,
+            rightUpperArm,
+            rightLowerArm,
+            leftUpperLeg,
+            leftLowerLeg,
+            rightUpperLeg,
+            rightLowerLeg,   
+        ]; 
+        for(let i=0; i<fileContent.length; i++) {
+            //console.log(model_1[objects[i]]);
+            var model = fileContent[i];
+            console.log(model);
+            objects[i].rotate = model.rotate;
+            objects[i].translation = model.translation;
+            objects[i].scale = model.scale;
+        }
+        draw_and_render();
+    };
+    reader.readAsText(file);
+}
+
+function displaySliders() {
+    const headX = createDiv("head-x-rotation");
+
+    createSlider(headX, "Head X Rotation ", 360, function () {
+        head.xRotate(this.value);
+    })
+
+    const headY = createDiv("head-y-rotation");
+
+    createSlider(headX, "Head Y Rotation ", 360, function () {
+        head.yRotate(this.value);
+    })
+
+    const headZ = createDiv("head-z-rotation");
+
+    createSlider(headZ, "Head Z Rotation ", 360, function () {
+        head.zRotate(this.value);
+    })
+
+    const rightUpperLowerArmY = createDiv("right-upper-lower-Arm-y-rotation");
+
+    createSlider(rightUpperLowerArmY, "Right Upper and Lower Arm Y Rotation ", 360, function () {
+        rightUpperArm.yRotate(this.value);
+        rightLowerArm.yRotate(this.value);
+    })
+
+    const leftUpperLowerArmY = createDiv("left-upper-lower-Arm-y-rotation");
+
+    createSlider(leftUpperLowerArmY, "Left Lower and Arm Y Rotation ", 360, function () {
+        leftUpperArm.yRotate(this.value);
+        leftLowerArm.yRotate(this.value);
+    })
+
+    const rightUpperLowerLegY = createDiv("right-upper-lower-Leg-y-rotation");
+
+    createSlider(rightUpperLowerLegY, "Right Upper and Lower Leg Y Rotation ", 360, function () {
+        rightUpperLeg.yRotate(this.value);
+        rightLowerLeg.yRotate(this.value);
+    })
+
+    const leftUpperLowerLegY = createDiv("left-upper-lower-Leg-y-rotation");
+
+    createSlider(leftUpperLowerLegY, "Left Lower and Leg Y Rotation ", 360, function () {
+        leftUpperLeg.yRotate(this.value);
+        leftLowerLeg.yRotate(this.value);
+    })
+
+    const rightUpperLowerArmZ = createDiv("right-upper-lower-Arm-z-rotation");
+
+    createSlider(rightUpperLowerArmZ, "Right Upper and Lower Arm Z Rotation ", 360, function () {
+        rightUpperArm.zRotate(this.value);
+        rightLowerArm.zRotate(this.value);
+    })
+
+    const leftUpperLowerArmZ = createDiv("left-upper-lower-Arm-z-rotation");
+
+    createSlider(leftUpperLowerArmZ, "Left Lower and Arm Z Rotation ", 360, function () {
+        leftUpperArm.zRotate(this.value);
+        leftLowerArm.zRotate(this.value);
+    })
+
+    const rightUpperLowerLegZ = createDiv("right-upper-lower-Leg-z-rotation");
+
+    createSlider(rightUpperLowerLegZ, "Right Upper and Lower Leg Z Rotation ", 360, function () {
+        rightUpperLeg.zRotate(this.value);
+        rightLowerLeg.zRotate(this.value);
+    })
+
+    const leftUpperLowerLegZ = createDiv("left-upper-lower-Leg-z-rotation");
+
+    createSlider(leftUpperLowerLegZ, "Left Lower and Leg Z Rotation ", 360, function () {
+        leftUpperLeg.zRotate(this.value);
+        leftLowerLeg.zRotate(this.value);
+    })
+    
 }
