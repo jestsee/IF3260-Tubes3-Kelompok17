@@ -110,8 +110,7 @@ class Cube {
 
         switch (this.type) {
             case 0: // model berwarna biasa
-                // draw(this.position, matrix, true);
-                draw();
+                draw(this.position, matrix, true);
                 break;
             case 1: // model tidak berwarna/transparan (buat joint)
                 draw(this.position, matrix, false);
@@ -121,7 +120,8 @@ class Cube {
                 drawTexImage(this.position, matrix, true);
                 break;
             case 3:
-                draw_bump(this.translation, this.scale);
+                draw_bump(this.rotate, this.translation, this.scale);
+                break;
         }
 
         // draw(this.position, matrix, this.withColor);

@@ -97,10 +97,10 @@ function scale4(a, b, c) {
 
 function init_objects() {
     head = new Cube({scale:[2,2,1],translation:[0,0,0],type:3});
-    rightUpperArm = new Cube({scale:[0.4, 1, 0.1], translation:[1.3,0,0], type:3})
-    leftUpperArm = new Cube({scale:[0.4, 1, 0.1], translation:[-1.3,0,0], type:3})
-    rightLowerArm = new Cube({scale:[0.5, 1, 0.1], translation:[1.3,-1,0], type:3})
-    leftLowerArm = new Cube({scale:[0.5, 1, 0.1], translation:[-1.3,-1,0], type:3})
+    rightUpperArm = new Cube({scale:[0.4, 1, 0.1], translation:[1.5,0,0], type:3})
+    leftUpperArm = new Cube({scale:[0.4, 1, 0.1], translation:[-1.5,0,0], type:3})
+    rightLowerArm = new Cube({scale:[0.5, 1, 0.1], translation:[1.5,-1,0], type:3})
+    leftLowerArm = new Cube({scale:[0.5, 1, 0.1], translation:[-1.5,-1,0], type:3})
     rightUpperLeg = new Cube({scale:[0.4, 1, 0.1], translation:[0.5,-1.9,0], type:3})
     leftUpperLeg = new Cube({scale:[0.4, 1, 0.1], translation:[-0.5,-1.9,0], type:3})
     rightLowerLeg = new Cube({scale:[0.4, 0.7, 0.1], translation:[0.5,-2.9,0], type:3})
@@ -114,6 +114,24 @@ function init_objects() {
     leftUpperLeg.setParent(head)
     rightLowerLeg.setParent(rightUpperLeg)
     leftLowerLeg.setParent(leftUpperLeg)
+    
+    leftUpperArm.moveCenterToUpmost();
+    leftLowerArm.moveCenterToUpmost();
+    rightUpperArm.moveCenterToUpmost();
+    rightLowerArm.moveCenterToUpmost();
+
+    leftUpperLeg.moveCenterToUpmost();
+    rightUpperLeg.moveCenterToUpmost();
+    rightLowerLeg.moveCenterToUpmost();
+    leftLowerLeg.moveCenterToUpmost();
+
+    head.localMatrix = head.generateMatrix();
+    leftUpperArm.localMatrix = leftUpperArm.generateMatrix();
+    rightUpperArm.localMatrix = rightUpperArm.generateMatrix();
+    rightUpperLeg.localMatrix = rightUpperLeg.generateMatrix();
+    leftUpperLeg.localMatrix = leftUpperLeg.generateMatrix();
+    leftLowerLeg.localMatrix = leftLowerLeg.generateMatrix();
+    rightLowerLeg.localMatrix = rightLowerLeg.generateMatrix();
 }
 
 function quad(a, b, c, d) {
@@ -233,6 +251,34 @@ let draw_bump_init = function() {
 
     gl.uniformMatrix4fv( gl.getUniformLocation(program, "modelViewMatrix"), false, flatten(modelViewMatrix));
     gl.uniformMatrix4fv( gl.getUniformLocation(program, "projectionMatrix"), false, flatten(projectionMatrix));
-
+    requestAnimationFrame(drawSceneWithAnim);
     head.draw();
+}
+
+var n = 1;
+var n1 = n;
+function drawSceneWithAnim(time) {
+    // console.log("draw scene called");
+    time *= 0.0005;
+  
+    // update the local matrices for each object.
+    head.yRotate(n);
+    //rightUpperArm.xRotate(-n1);
+    //rightLowerArm.xRotate(-n1);
+    //rightUpperArm.yRotate(-n1);
+    //rightLowerArm.yRotate(-n1);
+    //leftUpperArm.xRotate(n1);
+    //leftLowerArm.xRotate(n1);
+    //rightUpperLeg.xRotate(-n1);
+    //rightLowerLeg.xRotate(-n1);
+    //leftUpperLeg.xRotate(n1);
+    //leftLowerLeg.xRotate(n1);
+    head.draw();
+  
+    requestAnimationFrame(drawSceneWithAnim);
+    if(n1==90) {
+        n1= -90;
+    }
+    n+=1;
+    n1+=1;
 }
