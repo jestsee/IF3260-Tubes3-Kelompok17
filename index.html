@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <title>Tubes 3 Grafkom</title>
+  </head>
+  <body>
+    <script type="text/javascript" src="js/canvas.js"></script>
+    <script type="text/javascript" src="js/shaders.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/draw.js"></script>
+    <script type="text/javascript" src="js/cube.js"></script>
+    <script type="text/javascript" src="js/states.js"></script>
+    <script type="text/javascript" src="js/controllers.js"></script>
+    <script type="text/javascript" src="js/model_1.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+
+    <div class="tools">
+      <label for="shading-switch">SHADING</label>
+      <label class="switch">
+        <input type="checkbox" id="shading" oninput="shadingSwitch()" />
+        <span class="slider round"></span>
+      </label>
+
+      <button type="button" id="startBtn" onclick="startAnimation()">
+        Start Animation
+      </button>
+    </div>
+    <br />
+    <div class="sliders" id="sliders"></div>
+    <button class="button" onclick="save()">Save</button>
+    <input type="file" id="myfile" name="myfile" accept="application/JSON" />
+    <button type="button" onclick="load()">Load</button>
+  </body>
+</html>
